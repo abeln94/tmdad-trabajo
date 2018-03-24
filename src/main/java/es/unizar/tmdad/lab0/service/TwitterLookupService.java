@@ -4,6 +4,9 @@ import es.unizar.tmdad.lab0.processors.PrependProcessor;
 import es.unizar.tmdad.lab0.processors.AppendProcessor;
 import es.unizar.tmdad.lab0.processors.Processor;
 import es.unizar.tmdad.lab0.processors.TweetModified;
+import es.unizar.tmdad.lab0.repo.TweetRepository;
+import es.unizar.tmdad.lab0.repo.TweetSaved;
+
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +34,8 @@ import org.springframework.util.MimeTypeUtils;
 @Service
 public class TwitterLookupService implements StreamListener{
     
-    
+    @Autowired
+    private TweetRepository repo;
     @Autowired
     private SimpMessageSendingOperations smso;
     
@@ -133,6 +137,16 @@ public class TwitterLookupService implements StreamListener{
         map.put(MessageHeaders.CONTENT_TYPE,MimeTypeUtils.APPLICATION_JSON);
         
         for (Tweet tweetToSend : processor.parseTweet(tweet)) {
+        //**********************************************************
+        	//				GUARDAR EN BD
+        //**********************************************************
+        	TweetSaved tweetToSave = new TweetSaved();
+        	tweetToSave.setId(tweetToSend.getIdStr());
+        	tweetToSave.setText(tweetToSend.getUnmodifiedText());
+        	tweetToSave.setFromUser(tweetToSend.getFromUser());
+        	tweetToSave.setQuery(query);
+        	repo.save(tweetToSave);
+       	//**********************************************************
             smso.convertAndSend("/topic/search", tweetToSend, map);
         }
         
