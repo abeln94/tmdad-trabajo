@@ -20,7 +20,7 @@ public class TweetSaved {
 	@Column(name = "ID")
 	public String getId(){
 		return id;
-	}
+}
 	@Column(name = "CONTENT")
 	public String getText(){
 		return text;

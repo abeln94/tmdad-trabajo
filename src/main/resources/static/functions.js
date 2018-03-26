@@ -1,13 +1,11 @@
 var stompClient = null;
 var mustacheTemplate = "-unloaded-";
-var subscription = null;
 
 $(document).ready(function() {
     
-    $("#navBar").hide();
     $("#loader").show();
     
-    $("#search").submit(streamOnClick);
+    $("#admin").click(openAdmin);
     
     $.get('template', function(template) {
         Mustache.parse(template);
@@ -17,32 +15,11 @@ $(document).ready(function() {
     
     stompClient = Stomp.over(new SockJS("/twitter"));//endpoint
     stompClient.connect({}, function(frame) {
+        stompClient.subscribe("/topic/search", onTweetReceived);
         stompClient.debug = null;
-        console.log("Connected");
-        $("#navBar").show();
-        $("#loader").hide();
+        console.log("Connected and subscribed");
     });
 });
-
-
-
-function streamOnClick(event){
-    event.preventDefault();
-    //$("#resultsBlock").empty();
-    
-    
-    if(subscription !== null){
-        subscription.unsubscribe();
-        subscription = null;
-        $("#loader").hide();
-        console.log("unsubscribed");
-    }else{
-        subscription = stompClient.subscribe("/topic/search", onTweetReceived);
-        $("#loader").show();
-        console.log("subscribed");
-    }
-}
-
 
 function onTweetReceived(tweet){
     console.log("received tweet");
@@ -50,7 +27,11 @@ function onTweetReceived(tweet){
     
     $("#loader").hide();
     $("#resultsBlock").prepend(rendered);
-    if($("#resultsBlock").get(0).childElementCount > 100){
+    if($("#resultsBlock").get(0).childElementCount > 10){
         $("#resultsBlock").children().last().remove();
     }
+}
+
+function openAdmin(){
+    window.open('/admin','_blank');
 }

@@ -47,16 +47,14 @@ public class SearchController {
         return "admin";
     }
     
-    @MessageMapping(/*app*/"/query")
-    public void searchQuery(String query) throws Exception {
-        System.out.println("Received search query: "+query);
-        twitter.changeQuery(query);
-    }
-    
-    @MessageMapping(/*app*/"/processor")
-    public void processor(String processor) throws Exception {
-        System.out.println("Received processor command: "+processor);
-        twitter.changeProcessor(processor);
+    @MessageMapping(/*app*/"/settings")
+    public void searchQuery(String id, @Header String query, @Header String processor, @Header String level) throws Exception {
+        if(!"1234".equals(id)){
+            System.out.println("No permissions!");
+            return;
+        }
+        System.out.println("Received search="+query+" - processor="+processor+" - level="+level);
+        twitter.changeSettings(query,processor,level);
     }
     
     @EventListener

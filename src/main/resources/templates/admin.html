@@ -46,17 +46,36 @@
 </head>
 <body>
 <nav class="navbar navbar-dark bg-dark navbar-expand-sm sticky-top" id="navBar">
-    <a class="navbar-brand" href="#">Cliente Stream Twitter</a>
-    <form class="mx-2 my-auto d-inline w-100" id="search" action="search" method="get">
-        <div class="input-group">
-            <input class="form-control" type="text" id="q" name="q" placeholder="Escribe algo que quieras buscar"/>
-            <input class="form-control" type="text" id="qP" name="qP" placeholder="Escribe el nombre del processor"/>
-            <span class="input-group-append">
-                <button class="btn btn-secondary" type="submit">Buscar</button>
-            </span>
-        </div>
-    </form>
+    <a class="navbar-brand" href="#">Admin page</a>
 </nav>
+    
+    <div id="loader"></div>
+    
+    <div class="container" id="settings">
+
+        <h1>Settings</h1>
+        <p class="lead">Query word</p>
+        <input class="form-control" type="text" id="query" name="q" placeholder="Escribe algo que quieras buscar"/>
+
+        <p class="lead">Processor</p>
+        <select id="processor">
+            <option value="disabled" selected="selected">Disabled</option>
+            <option value="leet"                        >Leet</option>
+            <option value="jumpLetters"                 >Jump Letters</option>
+            <option value="jumpWords"                   >Jump Words</option>
+          </select> 
+        
+        <p class="lead">Level</p>
+        <select id="level">
+            <option value="LOW"                       >Low</option>
+            <option value="MEDIUM" selected="selected">Medium</option>
+            <option value="HIGH"                      >High</option>
+          </select> 
+        
+        <p class="lead">Apply</p>
+        <button class="btn btn-secondary" id="apply">Apply</button>
+
+    </div> <!-- /container -->
 
 <script src="http://code.jquery.com/jquery-3.0.0.min.js"
         th:src="@{/webjars/jquery/3.0.0/jquery.min.js}"></script>

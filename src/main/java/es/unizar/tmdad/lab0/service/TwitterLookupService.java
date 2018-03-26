@@ -1,13 +1,11 @@
 package es.unizar.tmdad.lab0.service;
 
-import es.unizar.tmdad.lab0.processors.PrependProcessor;
-import es.unizar.tmdad.lab0.processors.AppendProcessor;
 import es.unizar.tmdad.lab0.processors.Processor;
-import es.unizar.tmdad.lab0.processors.TweetModified;
+import es.unizar.tmdad.lab0.processors.ProcessorsList;
 import es.unizar.tmdad.lab0.repo.TweetRepository;
 import es.unizar.tmdad.lab0.repo.TweetSaved;
+import es.unizar.tmdad.lab0.settings.Preferences;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.social.twitter.api.SearchMetadata;
@@ -18,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +33,13 @@ public class TwitterLookupService implements StreamListener{
     
     @Autowired
     private TweetRepository repo;
+    
+    @Autowired
+    private ProcessorsList processorsList;
+    
+    @Autowired
+    private Preferences preferences;
+    
     @Autowired
     private SimpMessageSendingOperations smso;
     
@@ -59,14 +63,8 @@ public class TwitterLookupService implements StreamListener{
     
     private Stream stream = null;
     private String query = "";
-    private Processor processor = new AppendProcessor();
     
     private int users = 0;
-    
-    public void changeQuery(String newQuery) {
-        query = newQuery;
-        updateStream();
-    }
     
     private void updateStream(){
         if(stream!=null){
@@ -110,18 +108,17 @@ public class TwitterLookupService implements StreamListener{
             updateStream();
         }
     }
-
-    public void changeProcessor(String processorname) {
-        switch(processorname){
-            case "prependProcessor":
-                processor = new AppendProcessor();
-                break;
-            case "appendProcessor":
-                processor = new PrependProcessor();
-                break;
-        }
+    
+    public void changeSettings(String query, String processor, String level) {
+        this.query = query;
+        
+        preferences.setProcessorName(processor);
+        
+        preferences.setProcessorLevel(Processor.level.valueOf(level));
+        
         updateStream();
     }
+
     
     
 
@@ -136,6 +133,7 @@ public class TwitterLookupService implements StreamListener{
         Map<String, Object> map = new HashMap<>();
         map.put(MessageHeaders.CONTENT_TYPE,MimeTypeUtils.APPLICATION_JSON);
         
+        Processor processor = processorsList.getByName(preferences.getProcessorName());
         for (Tweet tweetToSend : processor.parseTweet(tweet)) {
         //**********************************************************
         	//				GUARDAR EN BD

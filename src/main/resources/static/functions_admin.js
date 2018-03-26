@@ -2,28 +2,30 @@ var stompClient = null;
 
 $(document).ready(function() {
     
+    $("#settings").hide();
+    $("#loader").show();
     
-    $("#search").submit(streamOnClick);
+    $("#apply").click(applySettings);
     
     stompClient = Stomp.over(new SockJS("/twitter"));//endpoint
     stompClient.connect({}, function(frame) {
         stompClient.debug = null;
         console.log("Connected");
-        $("#navBar").show();
+        $("#settings").show();
         $("#loader").hide();
     });
 });
 
 
 
-function streamOnClick(event){
-    event.preventDefault();
-    //$("#resultsBlock").empty();
+function applySettings(){
     
-    var query = $("#q").val();
-    var processor = $("#qP").val();
+    var query = $("#query").val();
+    var processor = $("#processor").val();
+    var level = $("#level").val();
     
-    stompClient.send("/app/query",{},query);
-    stompClient.send("/app/processor",{},processor);
-    console.log("changed query to >"+query+"< and processor "+processor);
+    var values = {query:query, processor:processor, level:level};
+    
+    stompClient.send("/app/settings",values,"1234");
+    console.log(JSON.stringify(values));
 }
