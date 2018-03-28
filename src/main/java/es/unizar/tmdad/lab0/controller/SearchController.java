@@ -1,6 +1,12 @@
 package es.unizar.tmdad.lab0.controller;
 
+import es.unizar.tmdad.lab0.repo.TweetSaved;
+import es.unizar.tmdad.lab0.service.TweetAccess;
 import es.unizar.tmdad.lab0.service.TwitterLookupService;
+
+import java.util.ArrayList;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
@@ -16,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
 
@@ -24,6 +31,8 @@ public class SearchController {
 
     @Autowired
     TwitterLookupService twitter;
+    @Autowired 
+    private TweetAccess twac;
 
     @RequestMapping("/")
     public String greeting() {
@@ -42,9 +51,31 @@ public class SearchController {
         return "template";
     }
     
+    @RequestMapping("/templatebd")
+    public String templatebd() {
+        return "templatebd";
+    }
+    
     @RequestMapping("/admin")
     public String configuration(){
         return "admin";
+    }
+    
+    @RequestMapping("/bdsearch")
+    public String bdconfiguration(){
+        return "bdsearch";
+    }
+    
+    @RequestMapping("/queries")
+    public @ResponseBody Set<String> queries(){
+    	return twac.findQueries();
+        
+    }
+    
+    @RequestMapping("/bdtweets")
+    public @ResponseBody ArrayList<TweetSaved> queries(String q){
+    	return twac.findByQuery(q);
+        
     }
     
     @MessageMapping(/*app*/"/settings")
@@ -53,7 +84,7 @@ public class SearchController {
             System.out.println("No permissions!");
             return;
         }
-        System.out.println("Received search="+query+" - processor="+processor+" - level="+level);
+        
         twitter.changeSettings(query,processor,level);
     }
     

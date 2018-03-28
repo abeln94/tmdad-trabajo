@@ -4,7 +4,7 @@ var mustacheTemplate = "-unloaded-";
 $(document).ready(function() {
     
     $("#loader").show();
-    
+    $("#bdsearch").click(openBD);
     $("#admin").click(openAdmin);
     
     $.get('template', function(template) {
@@ -34,4 +34,8 @@ function onTweetReceived(tweet){
 
 function openAdmin(){
     window.open('/admin','_blank');
+}
+
+function openBD(){
+	window.open('/bdsearch','_blank')
 }

@@ -34,6 +34,7 @@ public class TwitterLookupService implements StreamListener{
     @Autowired
     private TweetRepository repo;
     
+    
     @Autowired
     private ProcessorsList processorsList;
     
@@ -127,7 +128,7 @@ public class TwitterLookupService implements StreamListener{
     
     
     @Override
-    public void onTweet(Tweet tweet) {
+    public void onTweet(Tweet tweet){
         System.out.println("Received tweet");
         
         Map<String, Object> map = new HashMap<>();
@@ -145,6 +146,11 @@ public class TwitterLookupService implements StreamListener{
         	tweetToSave.setQuery(query);
         	repo.save(tweetToSave);
        	//**********************************************************
+        	try{
+        	Thread.sleep(1000);
+        	}catch (InterruptedException e) {
+				System.out.println("errorr");
+			}
             smso.convertAndSend("/topic/search", tweetToSend, map);
         }
         
