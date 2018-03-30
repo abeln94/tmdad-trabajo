@@ -46,7 +46,7 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-thymeleaf:$springBootVersion"
     compile "org.springframework.boot:spring-boot-devtools:$springBootVersion"
     //compile group: 'org.springframework', name: 'spring-jdbc', version: '4.0.0.RELEASE'
-    // compile group: 'org.postgresql', name: 'postgresql', version: '9.4-1201-jdbc4'
+    //compile group: 'org.postgresql', name: 'postgresql', version: '9.4-1201-jdbc4'
     runtime 'org.postgresql:postgresql:42.2.1'
     
     testCompile('org.springframework.boot:spring-boot-starter-test')

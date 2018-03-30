@@ -121,27 +121,23 @@ public class TwitterLookupService implements StreamListener {
     @Override
     public void onTweet(Tweet tweet) {
         System.out.println("Received tweet");
+        
+        //**********************************************************
+        //				GUARDAR EN BD
+        //**********************************************************
+        TweetSaved tweetToSave = new TweetSaved();
+        tweetToSave.setId(tweet.getIdStr());
+        tweetToSave.setText(tweet.getUnmodifiedText());
+        tweetToSave.setFromUser(tweet.getFromUser());
+        tweetToSave.setQuery(query);
+        repo.save(tweetToSave);
+        //**********************************************************
 
         Map<String, Object> map = new HashMap<>();
         map.put(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON);
 
         Processor processor = processorsList.getByName(preferences.getProcessorName());
         for (Tweet tweetToSend : processor.parseTweet(tweet)) {
-            //**********************************************************
-            //				GUARDAR EN BD
-            //**********************************************************
-            TweetSaved tweetToSave = new TweetSaved();
-            tweetToSave.setId(tweetToSend.getIdStr());
-            tweetToSave.setText(tweetToSend.getUnmodifiedText());
-            tweetToSave.setFromUser(tweetToSend.getFromUser());
-            tweetToSave.setQuery(query);
-            repo.save(tweetToSave);
-            //**********************************************************
-            try {
-                Thread.sleep(1000); // ??? why?
-            } catch (InterruptedException e) {
-                System.out.println("error");
-            }
             smso.convertAndSend("/topic/search", tweetToSend, map);
         }
 
