@@ -47,7 +47,7 @@ public class SearchController {
     public String template() {
         return "template";
     }
-
+    
     @RequestMapping("/templatebd")
     public String templatebd() {
         return "templatebd";
