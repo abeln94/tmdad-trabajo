@@ -67,13 +67,15 @@ public class SearchController {
     }
     
     @RequestMapping("/queries")
-    public @ResponseBody Set<String> queries(){
+    @ResponseBody
+    public Set<String> queries(){
     	return twac.findQueries();
         
     }
     
     @RequestMapping("/bdtweets")
-    public @ResponseBody ArrayList<TweetSaved> queries(String q){
+    @ResponseBody
+    public ArrayList<TweetSaved> queries(String q){
     	return twac.findByQuery(q);
         
     }

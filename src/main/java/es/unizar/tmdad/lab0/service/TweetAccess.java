@@ -23,7 +23,6 @@ public class TweetAccess {
 		Set<String> resultSet = new LinkedHashSet<String>();
 		for(TweetSaved t: it){
 			resultSet.add(t.getQuery());
-			
 		}		
 		return resultSet;
 	}
