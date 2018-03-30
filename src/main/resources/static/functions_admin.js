@@ -1,14 +1,14 @@
 var stompClient = null;
 
-$(document).ready(function() {
-    
+$(document).ready(function () {
+
     $("#settings").hide();
     $("#loader").show();
-    
+
     $("#apply").click(applySettings);
-    
+
     stompClient = Stomp.over(new SockJS("/twitter"));//endpoint
-    stompClient.connect({}, function(frame) {
+    stompClient.connect({}, function (frame) {
         stompClient.debug = null;
         console.log("Connected");
         $("#settings").show();
@@ -18,14 +18,14 @@ $(document).ready(function() {
 
 
 
-function applySettings(){
-    
+function applySettings() {
+
     var query = $("#query").val();
     var processor = $("#processor").val();
     var level = $("#level").val();
-    
-    var values = {query:query, processor:processor, level:level};
-    
-    stompClient.send("/app/settings",values,"1234");
+
+    var values = {query: query, processor: processor, level: level};
+
+    stompClient.send("/app/settings", values, "1234");
     console.log(JSON.stringify(values));
 }

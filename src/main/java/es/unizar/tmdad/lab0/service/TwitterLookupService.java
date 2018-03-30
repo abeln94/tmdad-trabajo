@@ -29,22 +29,20 @@ import org.springframework.social.twitter.api.Tweet;
 import org.springframework.util.MimeTypeUtils;
 
 @Service
-public class TwitterLookupService implements StreamListener{
-    
+public class TwitterLookupService implements StreamListener {
+
     @Autowired
     private TweetRepository repo;
-    
-    
+
     @Autowired
     private ProcessorsList processorsList;
-    
+
     @Autowired
     private Preferences preferences;
-    
+
     @Autowired
     private SimpMessageSendingOperations smso;
-    
-    
+
     @Value("${twitter.consumerKey}")
     private String consumerKey;
 
@@ -60,35 +58,34 @@ public class TwitterLookupService implements StreamListener{
     public SearchResults emptyAnswer() {
         return new SearchResults(Collections.emptyList(), new SearchMetadata(0, 0));
     }
-        
-    
+
     private Stream stream = null;
     private String query = "";
-    
+
     private int users = 0;
-    
-    private void updateStream(){
-        if(stream!=null){
+
+    private void updateStream() {
+        if (stream != null) {
             stopStream();
         }
-        if(users>0){
+        if (users > 0) {
             startStream();
         }
-        
+
     }
-    
-    public void startStream(){
-        if(!query.isEmpty()){
+
+    public void startStream() {
+        if (!query.isEmpty()) {
             Twitter twitter = new TwitterTemplate(consumerKey, consumerSecret, accessToken, accessTokenSecret);
             List<StreamListener> list = new ArrayList<>();
             list.add(this);
             stream = twitter.streamingOperations().filter(query, list);
-            System.out.println("Started stream with query="+query);
+            System.out.println("Started stream with query=" + query);
         }
     }
-    
-    public void stopStream(){
-        if(stream!=null){
+
+    public void stopStream() {
+        if (stream != null) {
             stream.close();
             System.out.println("Stream closed");
         }
@@ -97,67 +94,62 @@ public class TwitterLookupService implements StreamListener{
 
     public void subscribeUser() {
         users += 1;
-        
-        if(users == 1){
+
+        if (users == 1) {
             updateStream();
         }
     }
 
     public void unSubscribeUser() {
         users -= 1;
-        if(users==0){
+        if (users == 0) {
             updateStream();
         }
     }
-    
+
     public void changeSettings(String query, String processor, String level) {
         this.query = query;
-        
+
         preferences.setProcessorName(processor);
-        
+
         preferences.setProcessorLevel(Processor.level.valueOf(level));
-        
+
         updateStream();
     }
 
-    
-    
-
-    
     //----------   Stream Listener -------------//
-    
-    
     @Override
-    public void onTweet(Tweet tweet){
+    public void onTweet(Tweet tweet) {
         System.out.println("Received tweet");
-        
+
         Map<String, Object> map = new HashMap<>();
-        map.put(MessageHeaders.CONTENT_TYPE,MimeTypeUtils.APPLICATION_JSON);
-        
+        map.put(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON);
+
         Processor processor = processorsList.getByName(preferences.getProcessorName());
         for (Tweet tweetToSend : processor.parseTweet(tweet)) {
-        //**********************************************************
-        	//				GUARDAR EN BD
-        //**********************************************************
-        	TweetSaved tweetToSave = new TweetSaved();
-        	tweetToSave.setId(tweetToSend.getIdStr());
-        	tweetToSave.setText(tweetToSend.getUnmodifiedText());
-        	tweetToSave.setFromUser(tweetToSend.getFromUser());
-        	tweetToSave.setQuery(query);
-        	repo.save(tweetToSave);
-       	//**********************************************************
-        	try{
-        	Thread.sleep(1000);
-        	}catch (InterruptedException e) {
-				System.out.println("errorr");
-			}
+            //**********************************************************
+            //				GUARDAR EN BD
+            //**********************************************************
+            TweetSaved tweetToSave = new TweetSaved();
+            tweetToSave.setId(tweetToSend.getIdStr());
+            tweetToSave.setText(tweetToSend.getUnmodifiedText());
+            tweetToSave.setFromUser(tweetToSend.getFromUser());
+            tweetToSave.setQuery(query);
+            repo.save(tweetToSave);
+            //**********************************************************
+            try {
+                Thread.sleep(1000); // ??? why?
+            } catch (InterruptedException e) {
+                System.out.println("error");
+            }
             smso.convertAndSend("/topic/search", tweetToSend, map);
         }
-        
+
     }
 
     @Override
-    public void onDelete(StreamDeleteEvent deleteEvent) { }
+    public void onDelete(StreamDeleteEvent deleteEvent) {
+    }
 
     @Override
     public void onLimit(int numberOfLimitedTweets) {
@@ -169,7 +161,4 @@ public class TwitterLookupService implements StreamListener{
         System.out.println("StreamListener#onWarning");
     }
 
-    
-    
 }
-

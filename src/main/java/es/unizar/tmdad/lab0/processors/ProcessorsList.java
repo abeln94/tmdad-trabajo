@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,41 +11,39 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ProcessorsList {
-    
+
     private final HashMap<String, Processor> pool = new HashMap<>(4);
-    
+
     @Autowired
     JumpLettersProcessor jlP;
-    
+
     @Autowired
     JumpWordsProcessor jwP;
-    
+
     @Autowired
     LeetProcessor lP;
-    
+
     @Autowired
     NoProcessor nP;
-    
+
     @PostConstruct
     private void init() {
         addProcessor("disabled", nP);
-        addProcessor("jumpLetters",jlP);
+        addProcessor("jumpLetters", jlP);
         addProcessor("jumpWords", jwP);
         addProcessor("leet", lP);
     }
-    
-    
-    private void addProcessor(String name, Processor processor){
+
+    private void addProcessor(String name, Processor processor) {
         pool.put(name, processor);
     }
-    
-    
-    public Set<String> getNames(){
+
+    public Set<String> getNames() {
         return pool.keySet();
     }
-    
-    public Processor getByName(String name){
+
+    public Processor getByName(String name) {
         return pool.get(name);
     }
-    
+
 }

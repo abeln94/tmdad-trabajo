@@ -12,7 +12,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.social.UncategorizedApiException;
 import org.springframework.social.twitter.api.SearchResults;
 import org.springframework.stereotype.Controller;
@@ -20,18 +19,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
-
 
 @Controller
 public class SearchController {
 
     @Autowired
-    TwitterLookupService twitter;
-    @Autowired 
+    private TwitterLookupService twitter;
+    
+    @Autowired
     private TweetAccess twac;
 
     @RequestMapping("/")
@@ -39,68 +36,67 @@ public class SearchController {
         return "index";
     }
 
-    @ResponseStatus(value= HttpStatus.BAD_REQUEST)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UncategorizedApiException.class)
     @ResponseBody
     public SearchResults handleUncategorizedApiException() {
         return twitter.emptyAnswer();
     }
-    
+
     @RequestMapping("/template")
     public String template() {
         return "template";
     }
-    
+
     @RequestMapping("/templatebd")
     public String templatebd() {
         return "templatebd";
     }
-    
+
     @RequestMapping("/admin")
-    public String configuration(){
+    public String configuration() {
         return "admin";
     }
-    
+
     @RequestMapping("/bdsearch")
-    public String bdconfiguration(){
+    public String bdconfiguration() {
         return "bdsearch";
     }
-    
+
     @RequestMapping("/queries")
     @ResponseBody
-    public Set<String> queries(){
-    	return twac.findQueries();
-        
+    public Set<String> queries() {
+        return twac.findQueries();
+
     }
-    
+
     @RequestMapping("/bdtweets")
     @ResponseBody
-    public ArrayList<TweetSaved> queries(String q){
-    	return twac.findByQuery(q);
-        
+    public ArrayList<TweetSaved> queries(String q) {
+        return twac.findByQuery(q);
+
     }
-    
+
     @MessageMapping(/*app*/"/settings")
     public void searchQuery(String id, @Header String query, @Header String processor, @Header String level) throws Exception {
-        if(!"1234".equals(id)){
+        if (!"1234".equals(id)) {
             System.out.println("No permissions!");
             return;
         }
-        
-        twitter.changeSettings(query,processor,level);
+
+        twitter.changeSettings(query, processor, level);
     }
-    
+
     @EventListener
-    private void handleSessionSubscribe(SessionSubscribeEvent event){
+    private void handleSessionSubscribe(SessionSubscribeEvent event) {
         System.out.println("user subscribed");
         twitter.subscribeUser();
     }
-    
+
     @EventListener
-    private void handleSessionUnsubscribe(SessionUnsubscribeEvent event){
+    private void handleSessionUnsubscribe(SessionUnsubscribeEvent event) {
         System.out.println("user unsubscribed");
         twitter.unSubscribeUser();
     }
-    
-    
+
 }
