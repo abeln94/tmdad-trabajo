@@ -4,6 +4,7 @@ import es.unizar.tmdad.lab0.repo.TweetSaved;
 import es.unizar.tmdad.lab0.service.TweetAccess;
 import es.unizar.tmdad.lab0.service.TwitterLookupService;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -52,6 +53,13 @@ public class SearchController {
     public String templatebd() {
         return "templatebd";
     }
+    
+    @RequestMapping("/user")
+    @ResponseBody
+    public Principal user(Principal principal) {
+        System.out.println(principal);
+        return principal;
+ }
 
     @RequestMapping("/admin")
     public String configuration() {

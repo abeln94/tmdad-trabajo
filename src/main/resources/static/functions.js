@@ -2,23 +2,19 @@ var stompClient = null;
 var mustacheTemplate = "-unloaded-";
 
 $(document).ready(function () {
-
+	console.log("READY")
     $("#loader").show();
     $("#bdsearch").click(openBD);
     $("#admin").click(openAdmin);
-
+    connect();
+    
     $.get('template', function (template) {
         Mustache.parse(template);
         mustacheTemplate = template;
     });
 
 
-    stompClient = Stomp.over(new SockJS("/twitter"));//endpoint
-    stompClient.connect({}, function (frame) {
-        stompClient.subscribe("/topic/search", onTweetReceived);
-        stompClient.debug = null;
-        console.log("Connected and subscribed");
-    });
+    
 });
 
 function onTweetReceived(tweet) {
@@ -31,6 +27,31 @@ function onTweetReceived(tweet) {
         $("#resultsBlock").children().last().remove();
     }
 }
+
+function connect(){
+	$.get('/user', function (data) {
+		console.log("hago setusername")
+		$('#user').html(data.userAuthentication.details.name)
+		$(".unauthenticated").hide()
+		$(".authenticated").show()
+	});
+	
+	stompClient = Stomp.over(new SockJS("/twitter"));//endpoint
+    stompClient.connect({}, function (frame) {
+        stompClient.subscribe("/topic/search", onTweetReceived);
+        stompClient.debug = null;
+        console.log("Connected and subscribed");
+    });
+}
+
+var logout = function() {
+    $.post("/logout", function() {
+      $("#user").html('');
+      $(".unauthenticated").show();
+      $(".authenticated").hide();
+    });
+    return true;
+  }
 
 function openAdmin() {
     window.open('/admin', '_blank');
