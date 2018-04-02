@@ -2,7 +2,11 @@ var stompClient = null;
 var mustacheTemplate = "-unloaded-";
 
 $(document).ready(function () {
-	console.log("READY")
+	if (window.location.hash == '#_=_'){
+	      history.replaceState 
+	          ? history.replaceState(null, null, window.location.href.split('#')[0])
+	          : window.location.hash = '';
+	  }
     $("#loader").show();
     $("#bdsearch").click(openBD);
     $("#admin").click(openAdmin);
@@ -30,7 +34,6 @@ function onTweetReceived(tweet) {
 
 function connect(){
 	$.get('/user', function (data) {
-		console.log("hago setusername")
 		$('#user').html(data.userAuthentication.details.name)
 		$(".unauthenticated").hide()
 		$(".authenticated").show()
