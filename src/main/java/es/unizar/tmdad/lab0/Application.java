@@ -21,8 +21,6 @@ public class Application extends WebSecurityConfigurerAdapter {
         .authorizeRequests()
           .antMatchers("/", "/login**", "/webjars/**")
           .permitAll()
-        .anyRequest()
-          .authenticated()
         .and().logout().logoutSuccessUrl("/").permitAll();
   }
     public static void main(String[] args) {

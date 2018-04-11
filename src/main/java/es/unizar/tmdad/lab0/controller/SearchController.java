@@ -1,5 +1,7 @@
 package es.unizar.tmdad.lab0.controller;
 
+import es.unizar.tmdad.lab0.repo.Admin;
+import es.unizar.tmdad.lab0.repo.TweetRepository;
 import es.unizar.tmdad.lab0.repo.TweetSaved;
 import es.unizar.tmdad.lab0.service.TweetAccess;
 import es.unizar.tmdad.lab0.service.TwitterLookupService;
@@ -29,6 +31,7 @@ public class SearchController {
     @Autowired
     private TwitterLookupService twitter;
     
+      
     @Autowired
     private TweetAccess twac;
 
@@ -56,9 +59,15 @@ public class SearchController {
     
     @RequestMapping("/user")
     @ResponseBody
-    public Principal user(Principal principal) {
-        System.out.println(principal);
-        return principal;
+    public Object user(Principal principal) {
+        ArrayList<String> ad = twac.findAdmins();
+        System.out.println("Tu id de fb: "+principal.getName());
+        if(ad.contains(principal.getName())){
+        	
+        	return principal;
+        }else{
+        	return "no access";
+        }
  }
 
     @RequestMapping("/admin")

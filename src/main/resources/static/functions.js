@@ -10,7 +10,13 @@ $(document).ready(function () {
     $("#loader").show();
     $("#bdsearch").click(openBD);
     $("#admin").click(openAdmin);
-    connect();
+    console.log("Conectando stomp");
+    stompClient = Stomp.over(new SockJS("/twitter"));//endpoint
+    stompClient.connect({}, function (frame) {
+        stompClient.subscribe("/topic/search", onTweetReceived);
+        stompClient.debug = null;
+        console.log("Connected and subscribed");
+    });
     
     $.get('template', function (template) {
         Mustache.parse(template);
@@ -18,7 +24,7 @@ $(document).ready(function () {
     });
 
 
-    
+    console.log("Conectado");
 });
 
 function onTweetReceived(tweet) {
@@ -32,29 +38,9 @@ function onTweetReceived(tweet) {
     }
 }
 
-function connect(){
-	$.get('/user', function (data) {
-		$('#user').html(data.userAuthentication.details.name)
-		$(".unauthenticated").hide()
-		$(".authenticated").show()
-	});
-	
-	stompClient = Stomp.over(new SockJS("/twitter"));//endpoint
-    stompClient.connect({}, function (frame) {
-        stompClient.subscribe("/topic/search", onTweetReceived);
-        stompClient.debug = null;
-        console.log("Connected and subscribed");
-    });
-}
 
-var logout = function() {
-    $.post("/logout", function() {
-      $("#user").html('');
-      $(".unauthenticated").show();
-      $(".authenticated").hide();
-    });
-    return true;
-  }
+
+
 
 function openAdmin() {
     window.open('/admin', '_blank');

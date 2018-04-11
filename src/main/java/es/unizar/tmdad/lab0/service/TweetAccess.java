@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
+import es.unizar.tmdad.lab0.repo.Admin;
+import es.unizar.tmdad.lab0.repo.AdminRepository;
 import es.unizar.tmdad.lab0.repo.TweetRepository;
 import es.unizar.tmdad.lab0.repo.TweetSaved;
 
@@ -16,6 +18,9 @@ public class TweetAccess {
 
     @Autowired
     private TweetRepository repo;
+    
+    @Autowired
+    private AdminRepository repoAd;
 
     public Set<String> findQueries() {
         Iterable<TweetSaved> it = repo.findAll();
@@ -24,6 +29,16 @@ public class TweetAccess {
             resultSet.add(t.getQuery());
         }
         return resultSet;
+    }
+    
+    public ArrayList<String> findAdmins() {
+        Iterable<Admin> it = repoAd.findAll();
+        ArrayList<String> resultSet = new ArrayList<>();
+        for (Admin a : it) {
+            	resultSet.add(a.getId());
+         	}
+        
+        return resultSet;        
     }
 
     public ArrayList<TweetSaved> findByQuery(String q) {
