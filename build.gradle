@@ -53,5 +53,8 @@ dependencies {
     //compile group: 'org.postgresql', name: 'postgresql', version: '9.4-1201-jdbc4'
     runtime 'org.postgresql:postgresql:42.2.1'
     
+    
+    compile("org.springframework.boot:spring-boot-starter-amqp")
+    
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }

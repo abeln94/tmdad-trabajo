@@ -1,10 +1,8 @@
 package es.unizar.tmdad.lab0.service;
 
-import es.unizar.tmdad.lab0.processors.Processor;
-import es.unizar.tmdad.lab0.processors.ProcessorsList;
+import es.unizar.tmdad.lab0.rabbitmq.RabbitMQ;
 import es.unizar.tmdad.lab0.repo.TweetRepository;
 import es.unizar.tmdad.lab0.repo.TweetSaved;
-import es.unizar.tmdad.lab0.settings.Preferences;
 
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,13 +33,10 @@ public class TwitterLookupService implements StreamListener {
     private TweetRepository repo;
 
     @Autowired
-    private ProcessorsList processorsList;
-
-    @Autowired
-    private Preferences preferences;
-
-    @Autowired
     private SimpMessageSendingOperations smso;
+    
+    @Autowired
+    private RabbitMQ rabbitMQ;
 
     @Value("${twitter.consumerKey}")
     private String consumerKey;
@@ -110,9 +105,9 @@ public class TwitterLookupService implements StreamListener {
     public void changeSettings(String query, String processor, String level) {
         this.query = query;
 
-        preferences.setProcessorName(processor);
+        //TODO preferences.setProcessorName(processor);
 
-        preferences.setProcessorLevel(Processor.level.valueOf(level));
+        //TODO preferences.setProcessorLevel(Processor.level.valueOf(level));
 
         updateStream();
     }
@@ -133,16 +128,18 @@ public class TwitterLookupService implements StreamListener {
         repo.save(tweetToSave);
         //**********************************************************
 
-        Map<String, Object> map = new HashMap<>();
-        map.put(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON);
-
-        Processor processor = processorsList.getByName(preferences.getProcessorName());
-        for (Tweet tweetToSend : processor.parseTweet(tweet)) {
-            smso.convertAndSend("/topic/search", tweetToSend, map);
-        }
-
+        rabbitMQ.sendTweet(tweet);
     }
 
+    public void onProcessedTweet(Tweet tweet){
+        Map<String, Object> map = new HashMap<>();
+        map.put(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON);
+        
+        smso.convertAndSend("/topic/search", tweet, map);
+    }
+    
+    
+    
     @Override
     public void onDelete(StreamDeleteEvent deleteEvent) {
     }
