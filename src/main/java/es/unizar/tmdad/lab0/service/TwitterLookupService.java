@@ -101,7 +101,7 @@ public class TwitterLookupService implements StreamListener {
     }
 
     public void unSubscribeUser() {
-        users -= 1;
+        users = Math.max(users - 1, 0);
         if (users == 0) {
             updateStream();
         }
@@ -121,7 +121,7 @@ public class TwitterLookupService implements StreamListener {
     @Override
     public void onTweet(Tweet tweet) {
         System.out.println("Received tweet");
-        
+
         //**********************************************************
         //				GUARDAR EN BD
         //**********************************************************

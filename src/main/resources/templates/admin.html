@@ -47,12 +47,11 @@
     <body>
         <nav class="navbar navbar-dark bg-dark navbar-expand-sm sticky-top" id="navBar">
             <a class="navbar-brand" href="#">Admin page</a>
-            <a class="navbar-brand" href="#">Logged in as: <span id = "user"></span></a>
         </nav>
 
         <div id="loader"></div>
 
-        <div class= "authenticated"  id="settings" style="display: none">
+        <div class="container" id="settings">
 
             <h1>Settings</h1>
             <p class="lead">Query word</p>
@@ -78,23 +77,6 @@
 
         </div> <!-- /container -->
 
-		<div class= "unauthenticated">
-        	<nav class="navbar navbar-dark bg-dark navbar-expand-sm sticky-top" id="navBar">
-            <a class="navbar-brand" href="#">Cliente Stream Twitter</a>
-             <a class="btn" href="/login" id="btnlogin">Login with facebook</a>
-            </nav>
-        
-        </div>
-        
-        <div class= "denied" style="display: none">
-        	<nav class="navbar navbar-dark bg-dark navbar-expand-sm sticky-top" id="navBar">
-            <a class="navbar-brand" href="#">Cliente Stream Twitter</a>
-             <a class="btn" href="/" id="btnlogin">Volver</a>
-            </nav>
-            
-            Acceso denegado, no tiene permisos de administrador.
-        
-        </div>
         <script src="http://code.jquery.com/jquery-3.0.0.min.js"
         th:src="@{/webjars/jquery/3.0.0/jquery.min.js}"></script>
         <script

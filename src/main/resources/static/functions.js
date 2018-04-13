@@ -2,11 +2,11 @@ var stompClient = null;
 var mustacheTemplate = "-unloaded-";
 
 $(document).ready(function () {
-	if (window.location.hash == '#_=_'){
-	      history.replaceState 
-	          ? history.replaceState(null, null, window.location.href.split('#')[0])
-	          : window.location.hash = '';
-	  }
+    if (window.location.hash == '#_=_') {
+        history.replaceState
+                ? history.replaceState(null, null, window.location.href.split('#')[0])
+                : window.location.hash = '';
+    }
     $("#loader").show();
     $("#bdsearch").click(openBD);
     $("#admin").click(openAdmin);
@@ -17,7 +17,7 @@ $(document).ready(function () {
         stompClient.debug = null;
         console.log("Connected and subscribed");
     });
-    
+
     $.get('template', function (template) {
         Mustache.parse(template);
         mustacheTemplate = template;
@@ -47,5 +47,5 @@ function openAdmin() {
 }
 
 function openBD() {
-    window.open('/bdsearch', '_blank')
+    window.open('/bdsearch', '_blank');
 }

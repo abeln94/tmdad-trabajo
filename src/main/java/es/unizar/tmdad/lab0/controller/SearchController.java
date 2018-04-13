@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
@@ -63,7 +64,6 @@ public class SearchController {
         ArrayList<String> ad = twac.findAdmins();
         System.out.println("Tu id de fb: "+principal.getName());
         if(ad.contains(principal.getName())){
-        	
         	return principal;
         }else{
         	return "no access";
@@ -95,12 +95,7 @@ public class SearchController {
     }
 
     @MessageMapping(/*app*/"/settings")
-    public void searchQuery(String id, @Header String query, @Header String processor, @Header String level) throws Exception {
-        if (!"1234".equals(id)) {
-            System.out.println("No permissions!");
-            return;
-        }
-
+    public void searchQuery(String body, @Header String query, @Header String processor, @Header String level) throws Exception {
         twitter.changeSettings(query, processor, level);
     }
 
@@ -111,7 +106,7 @@ public class SearchController {
     }
 
     @EventListener
-    private void handleSessionUnsubscribe(SessionUnsubscribeEvent event) {
+    private void handleSessionDisconnect(SessionDisconnectEvent event) {
         System.out.println("user unsubscribed");
         twitter.unSubscribeUser();
     }
