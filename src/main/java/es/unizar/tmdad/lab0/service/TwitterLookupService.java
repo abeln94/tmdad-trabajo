@@ -34,7 +34,7 @@ public class TwitterLookupService implements StreamListener {
 
     @Autowired
     private SimpMessageSendingOperations smso;
-    
+
     @Autowired
     private RabbitMQ rabbitMQ;
 
@@ -105,9 +105,7 @@ public class TwitterLookupService implements StreamListener {
     public void changeSettings(String query, String processor, String level) {
         this.query = query;
 
-        //TODO preferences.setProcessorName(processor);
-
-        //TODO preferences.setProcessorLevel(Processor.level.valueOf(level));
+        rabbitMQ.sendSettings(processor, level);
 
         updateStream();
     }
@@ -131,15 +129,13 @@ public class TwitterLookupService implements StreamListener {
         rabbitMQ.sendTweet(tweet);
     }
 
-    public void onProcessedTweet(Tweet tweet){
+    public void onProcessedTweet(Tweet tweet) {
         Map<String, Object> map = new HashMap<>();
         map.put(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON);
-        
+
         smso.convertAndSend("/topic/search", tweet, map);
     }
-    
-    
-    
+
     @Override
     public void onDelete(StreamDeleteEvent deleteEvent) {
     }

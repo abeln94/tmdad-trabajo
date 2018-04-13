@@ -29,15 +29,16 @@ public class RabbitMQ {
     static final String outputQueueName = "rawTweets-queue";
     static final String outputTopicName = "rawTweets-topic";
     
+    static final String settingsTopicName = "settings-topic";
     
     @Bean
-    Queue queuePing(){
+    Queue queueTweets(){
         return new Queue(inputQueueName, false);
     }
 
     @Bean
     Binding bindingPing(TopicExchange exchange) {
-        return BindingBuilder.bind(queuePing()).to(exchange).with(inputTopicName);
+        return BindingBuilder.bind(queueTweets()).to(exchange).with(inputTopicName);
     }
 
     @Bean
@@ -57,15 +58,11 @@ public class RabbitMQ {
     
     
     
-    
-    private final RabbitTemplate rabbitTemplate;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
     
     @Autowired
     private TwitterLookupService twitterLookupService;
-    
-    public RabbitMQ(RabbitTemplate rabbitTemplate) {
-        this.rabbitTemplate = rabbitTemplate;
-    }
 
     public void receiveMessage(Tweet tweet) {
         System.out.println("Received processed tweet");
@@ -75,6 +72,12 @@ public class RabbitMQ {
     public void sendTweet(Tweet tweet){
         System.out.println("Sent tweet to process");
         rabbitTemplate.convertAndSend(topicExchangeName, outputTopicName, tweet);
+    }
+    
+    public void sendSettings(String processorName, String processorLevel){
+        System.out.println("Sending settings");
+        String message = processorName+"\n"+processorLevel;
+        rabbitTemplate.convertAndSend(topicExchangeName, settingsTopicName, message);
     }
 
 }
