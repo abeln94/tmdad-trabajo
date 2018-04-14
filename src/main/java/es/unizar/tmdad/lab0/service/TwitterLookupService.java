@@ -16,6 +16,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -56,14 +58,13 @@ public class TwitterLookupService implements StreamListener {
 
     private Stream stream = null;
     private String query = "";
-
-    private int users = 0;
+    private Set<String> users = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
 
     private void updateStream() {
         if (stream != null) {
             stopStream();
         }
-        if (users > 0) {
+        if (!users.isEmpty()) {
             startStream();
         }
 
@@ -87,17 +88,17 @@ public class TwitterLookupService implements StreamListener {
         stream = null;
     }
 
-    public void subscribeUser() {
-        users += 1;
+    public void subscribeUser(String sessionId) {
+        users.add(sessionId);
 
-        if (users == 1) {
+        if (users.size() == 1) {
             updateStream();
         }
     }
 
-    public void unSubscribeUser() {
-        users = Math.max(users - 1, 0);
-        if (users == 0) {
+    public void unSubscribeUser(String sessionId) {
+        users.remove(sessionId);
+        if (users.isEmpty()) {
             updateStream();
         }
     }

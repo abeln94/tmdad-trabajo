@@ -4,8 +4,11 @@ import java.security.Principal;
 import org.springframework.boot.*;
 import org.springframework.boot.autoconfigure.*;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
+import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.web.socket.config.WebSocketMessageBrokerStats;
+import org.springframework.web.socket.messaging.SubProtocolWebSocketHandler;
 
 @SpringBootApplication
 @EnableOAuth2Sso
@@ -25,7 +28,7 @@ public class Application extends WebSecurityConfigurerAdapter {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(Application.class, args);        
     }
 
 }

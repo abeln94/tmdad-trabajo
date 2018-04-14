@@ -15,6 +15,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.social.UncategorizedApiException;
 import org.springframework.social.twitter.api.SearchResults;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.socket.config.WebSocketMessageBrokerStats;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
@@ -97,15 +99,17 @@ public class SearchController {
     }
 
     @EventListener
-    private void handleSessionSubscribe(SessionSubscribeEvent event) {
+    private void onSessionConnectedEvent(SessionConnectedEvent event) {
         System.out.println("user subscribed");
-        twitter.subscribeUser();
+        StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
+        twitter.subscribeUser(sha.getSessionId());
     }
 
     @EventListener
-    private void handleSessionDisconnect(SessionDisconnectEvent event) {
+    private void onSessionDisconnectEvent(SessionDisconnectEvent event) {
         System.out.println("user unsubscribed");
-        twitter.unSubscribeUser();
+        StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
+        twitter.unSubscribeUser(sha.getSessionId());
     }
 
 }
