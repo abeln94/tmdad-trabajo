@@ -22,17 +22,20 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.socket.config.WebSocketMessageBrokerStats;
+import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
+import org.springframework.web.socket.messaging.StompSubProtocolHandler;
 
 @Controller
 public class SearchController {
 
     @Autowired
     private TwitterLookupService twitter;
-    
-      
+
     @Autowired
     private TweetAccess twac;
 
@@ -52,27 +55,19 @@ public class SearchController {
     public String template() {
         return "template";
     }
-    
+
     @RequestMapping("/templatebd")
     public String templatebd() {
         return "templatebd";
     }
-    
-    @RequestMapping("/user")
-    @ResponseBody
-    public Object user(Principal principal) {
-        ArrayList<String> ad = twac.findAdmins();
-        System.out.println("Tu id de fb: "+principal.getName());
-        if(ad.contains(principal.getName())){
-        	return principal;
-        }else{
-        	return "no access";
-        }
- }
 
     @RequestMapping("/admin")
-    public String configuration() {
-        return "admin";
+    public String configuration(Principal principal) {
+        if (twac.isAdmin(principal.getName())) {
+            return "admin";
+        } else {
+            return "no-access";
+        }
     }
 
     @RequestMapping("/bdsearch")
@@ -95,8 +90,10 @@ public class SearchController {
     }
 
     @MessageMapping(/*app*/"/settings")
-    public void searchQuery(String body, @Header String query, @Header String processor, @Header String level) throws Exception {
-        twitter.changeSettings(query, processor, level);
+    public void searchQuery(String body, @Header String query, @Header String processor, @Header String level, Principal principal) throws Exception {
+        if (twac.isAdmin(principal.getName())) {
+            twitter.changeSettings(query, processor, level);
+        }
     }
 
     @EventListener

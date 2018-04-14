@@ -18,7 +18,7 @@ public class TweetAccess {
 
     @Autowired
     private TweetRepository repo;
-    
+
     @Autowired
     private AdminRepository repoAd;
 
@@ -29,16 +29,6 @@ public class TweetAccess {
             resultSet.add(t.getQuery());
         }
         return resultSet;
-    }
-    
-    public ArrayList<String> findAdmins() {
-        Iterable<Admin> it = repoAd.findAll();
-        ArrayList<String> resultSet = new ArrayList<>();
-        for (Admin a : it) {
-            	resultSet.add(a.getId());
-         	}
-        
-        return resultSet;        
     }
 
     public ArrayList<TweetSaved> findByQuery(String q) {
@@ -52,6 +42,18 @@ public class TweetAccess {
         }
 
         return resultSet;
+    }
+
+    public boolean isAdmin(String user) {
+        for (Admin a : repoAd.findAll()) {
+            if (user.equals(a.getId())) {
+                return true;
+            }
+        }
+
+        System.out.println("Tu id de fb: " + user);
+
+        return false;
     }
 
 }

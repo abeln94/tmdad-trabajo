@@ -49,32 +49,10 @@
             <a class="navbar-brand" href="#">Configuration page</a>
         </nav>
 
-        <div id="loader"></div>
-
         <div class="container" id="settings">
 
-            <h1>Settings</h1>
-            <p class="lead">Query word</p>
-            <input class="form-control" type="text" id="query" name="q" placeholder="Escribe algo que quieras buscar"/>
-
-            <p class="lead">Processor</p>
-            <select id="processor">
-                <option value="disabled" selected="selected">Disabled</option>
-                <option value="leet"                        >Leet</option>
-                <option value="jumpLetters"                 >Jump Letters</option>
-                <option value="jumpWords"                   >Jump Words</option>
-            </select> 
-
-            <p class="lead">Level</p>
-            <select id="level">
-                <option value="LOW"                       >Low</option>
-                <option value="MEDIUM" selected="selected">Medium</option>
-                <option value="HIGH"                      >High</option>
-            </select> 
-
-            <p class="lead">Apply</p>
-            <button class="btn btn-secondary" id="apply">Apply</button>
-
+            <h1>Unauthorized</h1>
+            <p class="lead">You can't access this page.</p>
         </div> <!-- /container -->
 
         <script src="http://code.jquery.com/jquery-3.0.0.min.js"
@@ -91,10 +69,6 @@
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
-
-
-        <script th:src="@{/functions_admin.js}"
-        src="../static/functions_admin.js"></script>
 
     </body>
 </html>
