@@ -98,6 +98,8 @@ public class SearchController {
         }
     }
 
+    //help from https://stackoverflow.com/questions/39677660/spring-websocket-how-to-get-number-of-sessions
+    
     @EventListener
     private void onSessionConnectedEvent(SessionConnectedEvent event) {
         System.out.println("user subscribed");
