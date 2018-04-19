@@ -1,6 +1,7 @@
 package es.unizar.tmdad.lab0.controller;
 
 import es.unizar.tmdad.lab0.repo.Admin;
+import es.unizar.tmdad.lab0.repo.ConfigPRepository;
 import es.unizar.tmdad.lab0.repo.TweetRepository;
 import es.unizar.tmdad.lab0.repo.TweetSaved;
 import es.unizar.tmdad.lab0.service.TweetAccess;
@@ -41,6 +42,7 @@ public class SearchController {
     @Autowired
     private TweetAccess twac;
 
+    
     @RequestMapping("/")
     public String greeting() {
         return "index";
@@ -95,6 +97,7 @@ public class SearchController {
     public void searchQuery(String body, @Header String query, @Header String processor, @Header String level, Principal principal) throws Exception {
         if (twac.isAdmin(principal.getName())) {
             twitter.changeSettings(query, processor, level);
+            twac.changeSettings(query,processor,level);
         }
     }
 

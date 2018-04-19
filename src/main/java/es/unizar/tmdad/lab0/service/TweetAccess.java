@@ -8,10 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
+import es.unizar.tmdad.lab0.repo.ConfigPRepository;
 import es.unizar.tmdad.lab0.repo.Admin;
 import es.unizar.tmdad.lab0.repo.AdminRepository;
+import es.unizar.tmdad.lab0.repo.ConfigProcessors;
 import es.unizar.tmdad.lab0.repo.TweetRepository;
 import es.unizar.tmdad.lab0.repo.TweetSaved;
+import org.springframework.social.twitter.api.Tweet;
 
 @Service
 public class TweetAccess {
@@ -21,6 +24,9 @@ public class TweetAccess {
 
     @Autowired
     private AdminRepository repoAd;
+
+    @Autowired
+    private ConfigPRepository config;
 
     public Set<String> findQueries() {
         Iterable<TweetSaved> it = repo.findAll();
@@ -55,5 +61,32 @@ public class TweetAccess {
 
         return false;
     }
-
+    
+    public void saveTweet(Tweet tweet, String query){
+    	TweetSaved tweetToSave = new TweetSaved();
+        tweetToSave.setId(tweet.getIdStr());
+        tweetToSave.setText(tweet.getUnmodifiedText());
+        tweetToSave.setFromUser(tweet.getFromUser());
+        tweetToSave.setQuery(query);
+        repo.save(tweetToSave);    	
+    }
+    public void changeSettings(String query, String processor, String level){
+    	config.deleteAll();
+    	if(!query.equals("")){
+	    	ConfigProcessors settings = new ConfigProcessors();
+	    	settings.setQuery(query);
+	    	settings.setProcessor(processor);
+	    	settings.setLevel(level);
+	    	config.save(settings);
+    	}
+    }
+    
+    public ConfigProcessors getSettings(){
+    	Iterable<ConfigProcessors> it = config.findAll();
+    	for(ConfigProcessors settings: it){
+    		return settings;
+    	}
+    	
+    	return null;
+    }
 }

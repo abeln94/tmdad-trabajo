@@ -12,7 +12,7 @@ public class TweetSaved {
     String id;
     String text;
     String fromUser;
-    String query = "default";
+    String query;
 
     @Id
     @Column(name = "ID")
