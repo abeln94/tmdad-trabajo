@@ -1,8 +1,8 @@
 package es.unizar.tmdad.lab0.controller;
 
 import es.unizar.tmdad.lab0.rabbitmq.RabbitMQ;
-import es.unizar.tmdad.lab0.repo.TweetAccess;
-import es.unizar.tmdad.lab0.repo.TweetSaved;
+import es.unizar.tmdad.lab0.repo.DBAccess;
+import es.unizar.tmdad.lab0.repo.DBTweetTableRow;
 import es.unizar.tmdad.lab0.service.TwitterLookupService;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -35,7 +35,7 @@ public class SearchController {
     private TwitterLookupService twitter;
 
     @Autowired
-    private TweetAccess twac;
+    private DBAccess twac;
 
     @Autowired
     private RabbitMQ rabbitMQ;
@@ -85,7 +85,7 @@ public class SearchController {
 
     @RequestMapping("/bdtweets")
     @ResponseBody
-    public ArrayList<TweetSaved> queries(String q) {
+    public ArrayList<DBTweetTableRow> queries(String q) {
         return twac.findByQuery(q);
 
     }

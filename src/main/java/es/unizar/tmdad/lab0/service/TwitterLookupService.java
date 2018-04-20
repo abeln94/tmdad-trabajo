@@ -1,7 +1,7 @@
 package es.unizar.tmdad.lab0.service;
 
 import es.unizar.tmdad.lab0.rabbitmq.RabbitMQ;
-import es.unizar.tmdad.lab0.repo.TweetAccess;
+import es.unizar.tmdad.lab0.repo.DBAccess;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,7 +29,7 @@ import org.springframework.util.MimeTypeUtils;
 public class TwitterLookupService implements StreamListener {
 
     @Autowired
-    private TweetAccess twac;
+    private DBAccess twac;
 
     @Autowired
     private SimpMessageSendingOperations smso;

@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tweets", schema = "public")
-public class TweetSaved {
+public class DBTweetTableRow {
 
     String id;
     String text;

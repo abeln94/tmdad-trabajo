@@ -8,30 +8,30 @@ import org.springframework.social.twitter.api.Tweet;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TweetAccess {
+public class DBAccess {
 
     @Autowired
-    private TweetRepository repo;
+    private DBTweetRepository repo;
 
     @Autowired
-    private AdminRepository repoAd;
+    private DBAdminRepository repoAd;
 
     @Autowired
-    private QueryRepository repoQuery;
+    private DBQueryRepository repoQuery;
 
     public Set<String> findQueries() {
-        Iterable<TweetSaved> it = repo.findAll();
+        Iterable<DBTweetTableRow> it = repo.findAll();
         Set<String> resultSet = new LinkedHashSet<>();
-        for (TweetSaved t : it) {
+        for (DBTweetTableRow t : it) {
             resultSet.add(t.getQuery());
         }
         return resultSet;
     }
 
-    public ArrayList<TweetSaved> findByQuery(String q) {
-        Iterable<TweetSaved> it = repo.findAll();
-        ArrayList<TweetSaved> resultSet = new ArrayList<>();
-        for (TweetSaved t : it) {
+    public ArrayList<DBTweetTableRow> findByQuery(String q) {
+        Iterable<DBTweetTableRow> it = repo.findAll();
+        ArrayList<DBTweetTableRow> resultSet = new ArrayList<>();
+        for (DBTweetTableRow t : it) {
             String query = t.getQuery().replace(" ", "");
             if (query.equals(q)) {
                 resultSet.add(t);
@@ -42,7 +42,7 @@ public class TweetAccess {
     }
 
     public boolean isAdmin(String user) {
-        for (Admin a : repoAd.findAll()) {
+        for (DBAdminTableRow a : repoAd.findAll()) {
             if (user.equals(a.getId())) {
                 return true;
             }
@@ -54,7 +54,7 @@ public class TweetAccess {
     }
 
     public void saveTweet(Tweet tweet, String query) {
-        TweetSaved tweetToSave = new TweetSaved();
+        DBTweetTableRow tweetToSave = new DBTweetTableRow();
         tweetToSave.setId(tweet.getIdStr());
         tweetToSave.setText(tweet.getUnmodifiedText());
         tweetToSave.setFromUser(tweet.getFromUser());
@@ -63,7 +63,7 @@ public class TweetAccess {
     }
 
     public String getQuery(){
-        for(Query query : repoQuery.findAll()){
+        for(DBQueryTableRow query : repoQuery.findAll()){
             return query.getQuery();
         }
         return "";
@@ -71,7 +71,7 @@ public class TweetAccess {
     
     public void setQuery(String query){
         repoQuery.deleteAll();
-        Query data = new Query();
+        DBQueryTableRow data = new DBQueryTableRow();
         data.setQuery(query);
         repoQuery.save(data);
     }

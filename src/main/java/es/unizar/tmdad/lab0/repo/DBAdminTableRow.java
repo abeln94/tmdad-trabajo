@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "admins", schema = "public")
-public class Admin {
+public class DBAdminTableRow {
 
     String id;
     

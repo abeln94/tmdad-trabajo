@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "query", schema = "public")
-public class Query {
+public class DBQueryTableRow {
 
     private String query;
     
