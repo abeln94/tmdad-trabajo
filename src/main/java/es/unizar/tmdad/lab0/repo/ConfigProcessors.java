@@ -6,20 +6,15 @@ import javax.persistence.Table;
 import javax.persistence.Column;
 
 @Entity
-@Table(name = "searchconfiguration", schema = "public")
+@Table(name = "processorconf", schema = "public")
 public class ConfigProcessors {
 
-    String query;
+    
     String processor;
     String level;
     
     @Id
-    @Column(name = "query")
-    public String getQuery() {
-        return query;
-    }
-
-    @Column(name = "processor")
+    @Column(name = "name")
     public String getProcessor() {
         return processor;
     }
@@ -27,10 +22,6 @@ public class ConfigProcessors {
     @Column(name = "level")
     public String getLevel() {
         return level;
-    }
-    
-    public void setQuery(String pQuery) {
-        query = pQuery;
     }
     
     public void setProcessor(String pProcessor) {

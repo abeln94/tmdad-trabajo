@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
@@ -12,6 +13,8 @@ import es.unizar.tmdad.lab0.repo.ConfigPRepository;
 import es.unizar.tmdad.lab0.repo.Admin;
 import es.unizar.tmdad.lab0.repo.AdminRepository;
 import es.unizar.tmdad.lab0.repo.ConfigProcessors;
+import es.unizar.tmdad.lab0.repo.Query;
+import es.unizar.tmdad.lab0.repo.QueryRepository;
 import es.unizar.tmdad.lab0.repo.TweetRepository;
 import es.unizar.tmdad.lab0.repo.TweetSaved;
 import org.springframework.social.twitter.api.Tweet;
@@ -27,6 +30,9 @@ public class TweetAccess {
 
     @Autowired
     private ConfigPRepository config;
+    
+    @Autowired
+    private QueryRepository repoQuery;
 
     public Set<String> findQueries() {
         Iterable<TweetSaved> it = repo.findAll();
@@ -73,12 +79,14 @@ public class TweetAccess {
     
     public void changeSettings(String query, String processor, String level){
     	config.deleteAll();
-    	if(!query.equals("")){
-	    	ConfigProcessors settings = new ConfigProcessors();
-	    	settings.setQuery(query);
-	    	settings.setProcessor(processor);
-	    	settings.setLevel(level);
-	    	config.save(settings);
+    	repoQuery.deleteAll();
+	    ConfigProcessors settings = new ConfigProcessors();
+	    Query nQuery = new Query();
+	    nQuery.setQuery(query);
+	    settings.setProcessor(processor);
+	    settings.setLevel(level);
+	    config.save(settings);
+	    repoQuery.save(nQuery);
     	}
     }
     
