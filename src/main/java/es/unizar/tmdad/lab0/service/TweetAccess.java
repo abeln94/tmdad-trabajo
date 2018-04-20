@@ -70,6 +70,7 @@ public class TweetAccess {
         tweetToSave.setQuery(query);
         repo.save(tweetToSave);    	
     }
+    
     public void changeSettings(String query, String processor, String level){
     	config.deleteAll();
     	if(!query.equals("")){
