@@ -1,18 +1,15 @@
-package es.unizar.tmdad.lab0.service;
+package es.unizar.tmdad.lab0.repo;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
-import es.unizar.tmdad.lab0.repo.ConfigPRepository;
 import es.unizar.tmdad.lab0.repo.Admin;
 import es.unizar.tmdad.lab0.repo.AdminRepository;
-import es.unizar.tmdad.lab0.repo.ConfigProcessors;
 import es.unizar.tmdad.lab0.repo.Query;
 import es.unizar.tmdad.lab0.repo.QueryRepository;
 import es.unizar.tmdad.lab0.repo.TweetRepository;
@@ -28,9 +25,6 @@ public class TweetAccess {
     @Autowired
     private AdminRepository repoAd;
 
-    @Autowired
-    private ConfigPRepository config;
-    
     @Autowired
     private QueryRepository repoQuery;
 
@@ -67,35 +61,26 @@ public class TweetAccess {
 
         return false;
     }
-    
-    public void saveTweet(Tweet tweet, String query){
-    	TweetSaved tweetToSave = new TweetSaved();
+
+    public void saveTweet(Tweet tweet, String query) {
+        TweetSaved tweetToSave = new TweetSaved();
         tweetToSave.setId(tweet.getIdStr());
         tweetToSave.setText(tweet.getUnmodifiedText());
         tweetToSave.setFromUser(tweet.getFromUser());
         tweetToSave.setQuery(query);
-        repo.save(tweetToSave);    	
+        repo.save(tweetToSave);
+    }
+
+    public String getQuery(){
+        for(Query query : repoQuery.findAll()){
+            return query.getQuery();
+        }
+        return "";
     }
     
-    public void changeSettings(String query, String processor, String level){
-    	config.deleteAll();
-    	repoQuery.deleteAll();
-	    ConfigProcessors settings = new ConfigProcessors();
-	    Query nQuery = new Query();
-	    nQuery.setQuery(query);
-	    settings.setProcessor(processor);
-	    settings.setLevel(level);
-	    config.save(settings);
-	    repoQuery.save(nQuery);
-    	}
+    public void setQuery(String query){
+        repoQuery.deleteAll();
+        repoQuery.save(new Query(query));
     }
     
-    public ConfigProcessors getSettings(){
-    	Iterable<ConfigProcessors> it = config.findAll();
-    	for(ConfigProcessors settings: it){
-    		return settings;
-    	}
-    	
-    	return null;
-    }
 }

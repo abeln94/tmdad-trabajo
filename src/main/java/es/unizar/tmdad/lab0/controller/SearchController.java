@@ -1,25 +1,16 @@
 package es.unizar.tmdad.lab0.controller;
 
 import es.unizar.tmdad.lab0.rabbitmq.RabbitMQ;
-import es.unizar.tmdad.lab0.repo.Admin;
-import es.unizar.tmdad.lab0.repo.ConfigPRepository;
-import es.unizar.tmdad.lab0.repo.ConfigProcessors;
-import es.unizar.tmdad.lab0.repo.TweetRepository;
 import es.unizar.tmdad.lab0.repo.TweetSaved;
-import es.unizar.tmdad.lab0.service.TweetAccess;
+import es.unizar.tmdad.lab0.repo.TweetAccess;
 import es.unizar.tmdad.lab0.service.TwitterLookupService;
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,14 +27,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.socket.config.WebSocketMessageBrokerStats;
-import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
-import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
-import org.springframework.web.socket.messaging.SessionSubscribeEvent;
-import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
-import org.springframework.web.socket.messaging.StompSubProtocolHandler;
 
 @Controller
 public class SearchController {
@@ -111,8 +96,8 @@ public class SearchController {
     public void searchQuery(String body, @Header String query, @Header String processor, @Header String level, Principal principal) throws Exception {
         if (twac.isAdmin(principal.getName())) {
             twitter.changeQuery(query);
+            twac.setQuery(query);
             rabbitMQ.sendSettings(processor, level);
-            twac.changeSettings(query, processor, level);
         }
     }
 
@@ -134,8 +119,7 @@ public class SearchController {
     //loader
     @EventListener
     public void handleContextRefresh(ContextRefreshedEvent event) {
-        ConfigProcessors settings = twac.getSettings();
-        twitter.changeQuery(settings.getQuery());
+        twitter.changeQuery(twac.getQuery());
 
         //deshibernate the other machine
         try {

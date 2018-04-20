@@ -1,5 +1,6 @@
 package es.unizar.tmdad.lab0.service;
 
+import es.unizar.tmdad.lab0.repo.TweetAccess;
 import es.unizar.tmdad.lab0.rabbitmq.RabbitMQ;
 import es.unizar.tmdad.lab0.repo.TweetRepository;
 import es.unizar.tmdad.lab0.repo.TweetSaved;

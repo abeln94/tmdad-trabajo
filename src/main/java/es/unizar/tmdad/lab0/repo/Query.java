@@ -9,7 +9,7 @@ import javax.persistence.Column;
 @Table(name = "query", schema = "public")
 public class Query {
 
-    String query;
+    private String query;
     
     @Id
     @Column(name = "name")
@@ -17,7 +17,7 @@ public class Query {
         return query;
     }
     
-    public void setQuery(String pQuery) {
-        query = pQuery;
+    public Query(String query) {
+        this.query = query;
     }
 }
