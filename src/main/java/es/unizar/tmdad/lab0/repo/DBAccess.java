@@ -62,14 +62,14 @@ public class DBAccess {
         repo.save(tweetToSave);
     }
 
-    public String getQuery(){
+    public String loadQuery(){
         for(DBQueryTableRow query : repoQuery.findAll()){
             return query.getQuery();
         }
         return "";
     }
     
-    public void setQuery(String query){
+    public void saveQuery(String query){
         repoQuery.deleteAll();
         DBQueryTableRow data = new DBQueryTableRow();
         data.setQuery(query);

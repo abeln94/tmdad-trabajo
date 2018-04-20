@@ -107,14 +107,14 @@ public class TwitterLookupService implements StreamListener {
     
     public void changeQuery(String query) {
         this.query = query;
-        twac.setQuery(query);
+        twac.saveQuery(query);
         System.out.println("New query: " + query);
 
         updateStream();
     }
     
     public void init(){
-        this.query = twac.getQuery();
+        this.query = twac.loadQuery();
         System.out.println("Loaded query "+query);
     }
     
