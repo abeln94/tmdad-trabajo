@@ -1,33 +1,28 @@
 package es.unizar.tmdad.lab0.service;
 
-import es.unizar.tmdad.lab0.repo.TweetAccess;
 import es.unizar.tmdad.lab0.rabbitmq.RabbitMQ;
-import es.unizar.tmdad.lab0.repo.TweetRepository;
-import es.unizar.tmdad.lab0.repo.TweetSaved;
-
+import es.unizar.tmdad.lab0.repo.TweetAccess;
 import java.util.ArrayList;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.social.twitter.api.SearchMetadata;
-import org.springframework.social.twitter.api.SearchResults;
-import org.springframework.social.twitter.api.Twitter;
-import org.springframework.social.twitter.api.impl.TwitterTemplate;
-import org.springframework.stereotype.Service;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.social.twitter.api.SearchMetadata;
+import org.springframework.social.twitter.api.SearchResults;
 import org.springframework.social.twitter.api.Stream;
 import org.springframework.social.twitter.api.StreamDeleteEvent;
 import org.springframework.social.twitter.api.StreamListener;
 import org.springframework.social.twitter.api.StreamWarningEvent;
 import org.springframework.social.twitter.api.Tweet;
+import org.springframework.social.twitter.api.Twitter;
+import org.springframework.social.twitter.api.impl.TwitterTemplate;
+import org.springframework.stereotype.Service;
 import org.springframework.util.MimeTypeUtils;
 
 @Service
@@ -112,10 +107,17 @@ public class TwitterLookupService implements StreamListener {
     
     public void changeQuery(String query) {
         this.query = query;
+        twac.setQuery(query);
         System.out.println("New query: " + query);
 
         updateStream();
     }
+    
+    public void init(){
+        this.query = twac.getQuery();
+        System.out.println("Loaded query "+query);
+    }
+    
 
     // ---------- Stream Listener -------------//
     @Override

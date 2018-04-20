@@ -3,18 +3,9 @@ package es.unizar.tmdad.lab0.repo;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.stereotype.Service;
-
-import es.unizar.tmdad.lab0.repo.Admin;
-import es.unizar.tmdad.lab0.repo.AdminRepository;
-import es.unizar.tmdad.lab0.repo.Query;
-import es.unizar.tmdad.lab0.repo.QueryRepository;
-import es.unizar.tmdad.lab0.repo.TweetRepository;
-import es.unizar.tmdad.lab0.repo.TweetSaved;
 import org.springframework.social.twitter.api.Tweet;
+import org.springframework.stereotype.Service;
 
 @Service
 public class TweetAccess {
@@ -80,7 +71,9 @@ public class TweetAccess {
     
     public void setQuery(String query){
         repoQuery.deleteAll();
-        repoQuery.save(new Query(query));
+        Query data = new Query();
+        data.setQuery(query);
+        repoQuery.save(data);
     }
     
 }

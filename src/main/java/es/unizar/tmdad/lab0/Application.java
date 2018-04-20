@@ -1,14 +1,10 @@
 package es.unizar.tmdad.lab0;
 
-import java.security.Principal;
-import org.springframework.boot.*;
-import org.springframework.boot.autoconfigure.*;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
-import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.web.socket.config.WebSocketMessageBrokerStats;
-import org.springframework.web.socket.messaging.SubProtocolWebSocketHandler;
 
 @SpringBootApplication
 @EnableOAuth2Sso

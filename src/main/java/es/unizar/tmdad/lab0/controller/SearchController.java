@@ -1,18 +1,16 @@
 package es.unizar.tmdad.lab0.controller;
 
 import es.unizar.tmdad.lab0.rabbitmq.RabbitMQ;
-import es.unizar.tmdad.lab0.repo.TweetSaved;
 import es.unizar.tmdad.lab0.repo.TweetAccess;
+import es.unizar.tmdad.lab0.repo.TweetSaved;
 import es.unizar.tmdad.lab0.service.TwitterLookupService;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Set;
 import javax.net.ssl.HttpsURLConnection;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -96,7 +94,6 @@ public class SearchController {
     public void searchQuery(String body, @Header String query, @Header String processor, @Header String level, Principal principal) throws Exception {
         if (twac.isAdmin(principal.getName())) {
             twitter.changeQuery(query);
-            twac.setQuery(query);
             rabbitMQ.sendSettings(processor, level);
         }
     }
@@ -119,7 +116,7 @@ public class SearchController {
     //loader
     @EventListener
     public void handleContextRefresh(ContextRefreshedEvent event) {
-        twitter.changeQuery(twac.getQuery());
+        twitter.init();
 
         //deshibernate the other machine
         try {
