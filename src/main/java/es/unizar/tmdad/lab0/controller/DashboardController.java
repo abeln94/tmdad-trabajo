@@ -30,7 +30,7 @@ import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 @Controller
-public class SearchController {
+public class DashboardController {
 
     @Autowired
     private TwitterLookupService twitter;
@@ -42,7 +42,7 @@ public class SearchController {
     private RabbitMQ rabbitMQ;
 
     @RequestMapping(value="/", method=RequestMethod.GET)
-    public String greeting() {
+    public String main() {
         return "index";
     }
 
@@ -54,17 +54,17 @@ public class SearchController {
     }
 
     @RequestMapping(value="/template/tweet", method=RequestMethod.GET)
-    public String template() {
+    public String getTweetTemplate() {
         return "template";
     }
 
     @RequestMapping(value="/template/tweets", method=RequestMethod.GET)
-    public String templatebd() {
+    public String getTweetsTemplate() {
         return "templatebd";
     }
 
     @RequestMapping(value="/configuration", method=RequestMethod.GET)
-    public String configuration(Principal principal) {
+    public String main_configuration(Principal principal) {
         if (twac.isAdmin(principal.getName())) {
             return "admin";
         } else {
@@ -73,26 +73,26 @@ public class SearchController {
     }
 
     @RequestMapping(value="/database", method=RequestMethod.GET)
-    public String bdconfiguration() {
+    public String main_database() {
         return "bdsearch";
     }
 
     @RequestMapping(value="/database/queries", method=RequestMethod.GET)
     @ResponseBody
-    public Set<String> queries() {
+    public Set<String> getQueries() {
         return twac.findQueries();
 
     }
 
     @RequestMapping(value="/database/tweets", method=RequestMethod.GET)
     @ResponseBody
-    public ArrayList<DBTweetTableRow> queries(String q) {
+    public ArrayList<DBTweetTableRow> getTweets(String q) {
         return twac.findByQuery(q);
 
     }
 
     @MessageMapping(/*app*/"/settings")
-    public void searchQuery(String body, @Header String query, @Header String processor, @Header String level, Principal principal) throws Exception {
+    public void changeSettings(String body, @Header String query, @Header String processor, @Header String level, Principal principal) throws Exception {
         if (twac.isAdmin(principal.getName())) {
             twitter.changeQuery(query);
             rabbitMQ.sendSettings(processor, level);
