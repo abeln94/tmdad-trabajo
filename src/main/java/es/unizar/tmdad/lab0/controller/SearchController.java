@@ -52,17 +52,17 @@ public class SearchController {
         return twitter.emptyAnswer();
     }
 
-    @RequestMapping("/template")
+    @RequestMapping("/template/tweet")
     public String template() {
         return "template";
     }
 
-    @RequestMapping("/templatebd")
+    @RequestMapping("/template/tweets")
     public String templatebd() {
         return "templatebd";
     }
 
-    @RequestMapping("/admin")
+    @RequestMapping("/configuration")
     public String configuration(Principal principal) {
         if (twac.isAdmin(principal.getName())) {
             return "admin";
@@ -71,19 +71,19 @@ public class SearchController {
         }
     }
 
-    @RequestMapping("/bdsearch")
+    @RequestMapping("/database")
     public String bdconfiguration() {
         return "bdsearch";
     }
 
-    @RequestMapping("/queries")
+    @RequestMapping("/database/queries")
     @ResponseBody
     public Set<String> queries() {
         return twac.findQueries();
 
     }
 
-    @RequestMapping("/bdtweets")
+    @RequestMapping("/database/tweets")
     @ResponseBody
     public ArrayList<DBTweetTableRow> queries(String q) {
         return twac.findByQuery(q);

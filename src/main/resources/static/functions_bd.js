@@ -2,7 +2,7 @@ var mustacheTemplate = "-unloaded-";
 
 $(document).ready(function () {
     $("#loader").show();
-    $.get('templatebd', function (template) {
+    $.get('template/tweets', function (template) {
         Mustache.parse(template);
         mustacheTemplate = template;
     });
@@ -14,7 +14,7 @@ $(document).ready(function () {
 
 function loadSelectbar() {
     console.log("queries");
-    $.get("queries", {})
+    $.get("database/queries", {})
             .done(function (data) {
                 $.each(data, function (i, item) {
                     $('#queries').append($('<option>', {
@@ -38,7 +38,7 @@ function doSearch() {
     console.log(query);
 
     $("#loader").show();
-    $.get("bdtweets", {q: query})
+    $.get("database/tweets", {q: query})
             .done(function (data) {
                 $("#loader").hide();
                 console.log(data);

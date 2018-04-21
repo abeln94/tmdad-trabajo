@@ -8,8 +8,6 @@ $(document).ready(function () {
                 : window.location.hash = '';
     }
     $("#loader").show();
-    $("#bdsearch").click(openBD);
-    $("#admin").click(openAdmin);
     console.log("Conectando stomp");
     stompClient = Stomp.over(new SockJS("/twitter"));//endpoint
     stompClient.connect({}, function (frame) {
@@ -18,7 +16,7 @@ $(document).ready(function () {
         console.log("Connected and subscribed");
     });
 
-    $.get('template', function (template) {
+    $.get('template/tweet', function (template) {
         Mustache.parse(template);
         mustacheTemplate = template;
     });
@@ -36,16 +34,4 @@ function onTweetReceived(tweet) {
     if ($("#resultsBlock").get(0).childElementCount > 10) {
         $("#resultsBlock").children().last().remove();
     }
-}
-
-
-
-
-
-function openAdmin() {
-    window.open('/admin', '_blank');
-}
-
-function openBD() {
-    window.open('/bdsearch', '_blank');
 }

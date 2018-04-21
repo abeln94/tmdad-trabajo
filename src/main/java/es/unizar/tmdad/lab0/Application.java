@@ -18,7 +18,7 @@ public class Application extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/", "/login**", "/webjars/**")
                 .permitAll()
-                .antMatchers("/admin","/functions_admin.js","/app/settings")
+                .antMatchers("/configuration","/functions_admin.js","/app/settings")
                 .authenticated()
                 .and().logout().logoutSuccessUrl("/").permitAll();
     }
