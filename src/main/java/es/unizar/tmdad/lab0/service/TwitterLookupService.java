@@ -49,9 +49,6 @@ public class TwitterLookupService implements StreamListener {
     @Value("${twitter.accessTokenSecret}")
     private String accessTokenSecret;
 
-    public SearchResults emptyAnswer() {
-        return new SearchResults(Collections.emptyList(), new SearchMetadata(0, 0));
-    }
 
     private Stream stream = null;
     private String query = "";

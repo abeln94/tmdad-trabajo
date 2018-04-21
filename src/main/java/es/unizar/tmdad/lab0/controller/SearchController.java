@@ -23,6 +23,7 @@ import org.springframework.social.twitter.api.SearchResults;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
@@ -40,7 +41,7 @@ public class SearchController {
     @Autowired
     private RabbitMQ rabbitMQ;
 
-    @RequestMapping("/")
+    @RequestMapping(value="/", method=RequestMethod.GET)
     public String greeting() {
         return "index";
     }
@@ -48,21 +49,21 @@ public class SearchController {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UncategorizedApiException.class)
     @ResponseBody
-    public SearchResults handleUncategorizedApiException() {
-        return twitter.emptyAnswer();
+    public String handleUncategorizedApiException() {
+        return "error";
     }
 
-    @RequestMapping("/template/tweet")
+    @RequestMapping(value="/template/tweet", method=RequestMethod.GET)
     public String template() {
         return "template";
     }
 
-    @RequestMapping("/template/tweets")
+    @RequestMapping(value="/template/tweets", method=RequestMethod.GET)
     public String templatebd() {
         return "templatebd";
     }
 
-    @RequestMapping("/configuration")
+    @RequestMapping(value="/configuration", method=RequestMethod.GET)
     public String configuration(Principal principal) {
         if (twac.isAdmin(principal.getName())) {
             return "admin";
@@ -71,19 +72,19 @@ public class SearchController {
         }
     }
 
-    @RequestMapping("/database")
+    @RequestMapping(value="/database", method=RequestMethod.GET)
     public String bdconfiguration() {
         return "bdsearch";
     }
 
-    @RequestMapping("/database/queries")
+    @RequestMapping(value="/database/queries", method=RequestMethod.GET)
     @ResponseBody
     public Set<String> queries() {
         return twac.findQueries();
 
     }
 
-    @RequestMapping("/database/tweets")
+    @RequestMapping(value="/database/tweets", method=RequestMethod.GET)
     @ResponseBody
     public ArrayList<DBTweetTableRow> queries(String q) {
         return twac.findByQuery(q);
