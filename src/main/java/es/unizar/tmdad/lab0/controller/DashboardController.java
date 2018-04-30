@@ -43,11 +43,11 @@ public class DashboardController {
 
     @Autowired
     private RabbitMQEndpoint rabbitMQ;
-    
+
     @Autowired
     private Preferences pref;
-    
-    @RequestMapping(value="/", method=RequestMethod.GET)
+
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public String main() {
         return "index";
     }
@@ -59,17 +59,17 @@ public class DashboardController {
         return "error";
     }
 
-    @RequestMapping(value="/template/tweet", method=RequestMethod.GET)
+    @RequestMapping(value = "/template/tweet", method = RequestMethod.GET)
     public String getTweetTemplate() {
         return "template";
     }
 
-    @RequestMapping(value="/template/tweets", method=RequestMethod.GET)
+    @RequestMapping(value = "/template/tweets", method = RequestMethod.GET)
     public String getTweetsTemplate() {
         return "templatebd";
     }
 
-    @RequestMapping(value="/configuration", method=RequestMethod.GET)
+    @RequestMapping(value = "/configuration", method = RequestMethod.GET)
     public String main_configuration(Principal principal) {
         if (twac.isAdmin(principal.getName())) {
             return "admin";
@@ -78,19 +78,19 @@ public class DashboardController {
         }
     }
 
-    @RequestMapping(value="/database", method=RequestMethod.GET)
+    @RequestMapping(value = "/database", method = RequestMethod.GET)
     public String main_database() {
         return "bdsearch";
     }
 
-    @RequestMapping(value="/database/queries", method=RequestMethod.GET)
+    @RequestMapping(value = "/database/queries", method = RequestMethod.GET)
     @ResponseBody
     public Set<String> getQueries() {
         return twac.findQueries();
 
     }
 
-    @RequestMapping(value="/database/tweets", method=RequestMethod.GET)
+    @RequestMapping(value = "/database/tweets", method = RequestMethod.GET)
     @ResponseBody
     public ArrayList<DBTweetTableRow> getTweets(String q) {
         return twac.findByQuery(q);
@@ -125,19 +125,28 @@ public class DashboardController {
     @EventListener
     public void handleContextRefresh(ContextRefreshedEvent event) {
 
-        //deshibernate the other machine
-        try {
-            HttpsURLConnection connection = (HttpsURLConnection) new URL("https://carlos-abel-tmdad-trabajo-2.herokuapp.com/").openConnection();
-            connection.setRequestMethod("HEAD");
-            int responseCode = connection.getResponseCode();
-            if (responseCode != 200) {
-                System.out.println("Oh oh, couldn't akawe machine ("+responseCode+")");
-            }
+        //deshibernate the other machines
+        String[] machines = new String[]{
+            "https://carlos-abel-tmdad-trabajo-2.herokuapp.com/",
+            "https://carlos-abel-tmdad-trabajo-3.herokuapp.com/",
+            "https://carlos-abel-tmdad-trabajo-4.herokuapp.com/"
+        };
 
-        } catch (MalformedURLException ex) {
-            ex.printStackTrace();
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        for (String machine : machines) {
+
+            try {
+                HttpsURLConnection connection = (HttpsURLConnection) new URL(machine).openConnection();
+                connection.setRequestMethod("HEAD");
+                int responseCode = connection.getResponseCode();
+                if (responseCode != 200) {
+                    System.out.println("Oh oh, couldn't akawe machine " + machine + " (" + responseCode + ")");
+                }
+
+            } catch (MalformedURLException ex) {
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
