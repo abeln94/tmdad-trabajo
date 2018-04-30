@@ -1,6 +1,7 @@
 package es.unizar.tmdad.lab0.rabbitmq;
 
 import es.unizar.tmdad.lab0.service.TwitterLookupService;
+import es.unizar.tmdad.lab0.settings.Preferences;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
@@ -15,43 +16,57 @@ import org.springframework.social.twitter.api.Tweet;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RabbitMQ {
+public class RabbitMQEndpoint {
     
-    static final String topicExchangeName = "tweets-exchange";
+    //exchanges
+    static final String tweetsExchangeName = "tweets-exchange";
+    static final String settingsExchangeName = "settings-exchange";
+    
     @Bean
-    TopicExchange exchange() {
-        return new TopicExchange(topicExchangeName);
+    TopicExchange tweetsExchange() {
+        return new TopicExchange(tweetsExchangeName);
     }
     
+    @Bean
+    TopicExchange settingsExchange() {
+        return new TopicExchange(settingsExchangeName);
+    }
+    
+    //queues
     static final String inputQueueName = "processedTweets-queue";
-    static final String inputTopicName = "processedTweets-topic";
-    
-    static final String outputQueueName = "rawTweets-queue";
-    static final String outputTopicName = "rawTweets-topic";
-    
-    static final String settingsTopicName = "settings-topic";
     
     @Bean
     Queue queueTweets(){
         return new Queue(inputQueueName, false);
     }
-
+    
+    
+    //topics
+    static final String inputTopicName = "processedTweets-topic";
+    static final String outputTopicNamePrefix = "rawTweets-topic.";
+    static final String settingsTopicNamePrefix = "settings-topic.";
+    
+    
+    //bindings
     @Bean
-    Binding bindingPing(TopicExchange exchange) {
-        return BindingBuilder.bind(queueTweets()).to(exchange).with(inputTopicName);
+    Binding binding() {
+        return BindingBuilder.bind(queueTweets()).to(tweetsExchange()).with(inputTopicName);
     }
 
+    //redirections
     @Bean
     SimpleMessageListenerContainer container(ConnectionFactory connectionFactory, MessageListenerAdapter listenerAdapter) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.setQueueNames(inputQueueName);
+        container.setQueues(queueTweets());
         container.setMessageListener(listenerAdapter);
         return container;
     }
 
+    
+    //adapters
     @Bean
-    MessageListenerAdapter listenerAdapter(RabbitMQ receiver) {
+    MessageListenerAdapter listenerAdapter(RabbitMQEndpoint receiver) {
         return new MessageListenerAdapter(receiver, "receiveMessage");
     }
 
@@ -63,21 +78,26 @@ public class RabbitMQ {
     
     @Autowired
     private TwitterLookupService twitterLookupService;
+    
+    @Autowired
+    private Preferences pref;
 
+    //listeners
     public void receiveMessage(Tweet tweet) {
         System.out.println("Received processed tweet");
         twitterLookupService.onProcessedTweet(tweet);
     }
     
+    //senders
     public void sendTweet(Tweet tweet){
-        System.out.println("Sent tweet to process");
-        rabbitTemplate.convertAndSend(topicExchangeName, outputTopicName, tweet);
+        System.out.println("Sent tweet to process to "+pref.getProcessorName());
+        rabbitTemplate.convertAndSend(tweetsExchangeName, outputTopicNamePrefix+pref.getProcessorName(), tweet);
+        //TODO: remove logic from here, send to logic class
     }
     
-    public void sendSettings(String processorName, String processorLevel){
-        System.out.println("Sending settings");
-        String message = processorName+"\n"+processorLevel;
-        rabbitTemplate.convertAndSend(topicExchangeName, settingsTopicName, message);
+    public void sendSettings(String processorLevel){
+        System.out.println("Sending settings to "+pref.getProcessorName());
+        rabbitTemplate.convertAndSend(settingsExchangeName, settingsTopicNamePrefix+pref.getProcessorName(), processorLevel);
     }
 
 }

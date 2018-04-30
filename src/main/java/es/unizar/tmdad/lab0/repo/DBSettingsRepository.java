@@ -4,6 +4,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface DBQueryRepository extends CrudRepository<DBQueryTableRow, Integer> {
+public interface DBSettingsRepository extends CrudRepository<DBSettingsTableRow, Integer> {
 
 }

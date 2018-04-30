@@ -1,9 +1,10 @@
 package es.unizar.tmdad.lab0.controller;
 
-import es.unizar.tmdad.lab0.rabbitmq.RabbitMQ;
+import es.unizar.tmdad.lab0.rabbitmq.RabbitMQEndpoint;
 import es.unizar.tmdad.lab0.repo.DBAccess;
 import es.unizar.tmdad.lab0.repo.DBTweetTableRow;
 import es.unizar.tmdad.lab0.service.TwitterLookupService;
+import es.unizar.tmdad.lab0.settings.Preferences;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -14,6 +15,8 @@ import javax.net.ssl.HttpsURLConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -39,8 +42,11 @@ public class DashboardController {
     private DBAccess twac;
 
     @Autowired
-    private RabbitMQ rabbitMQ;
-
+    private RabbitMQEndpoint rabbitMQ;
+    
+    @Autowired
+    private Preferences pref;
+    
     @RequestMapping(value="/", method=RequestMethod.GET)
     public String main() {
         return "index";
@@ -95,7 +101,8 @@ public class DashboardController {
     public void changeSettings(String body, @Header String query, @Header String processor, @Header String level, Principal principal) throws Exception {
         if (twac.isAdmin(principal.getName())) {
             twitter.changeQuery(query);
-            rabbitMQ.sendSettings(processor, level);
+            pref.setConfiguration(processor);
+            rabbitMQ.sendSettings(level);
         }
     }
 
@@ -117,7 +124,6 @@ public class DashboardController {
     //loader
     @EventListener
     public void handleContextRefresh(ContextRefreshedEvent event) {
-        twitter.init();
 
         //deshibernate the other machine
         try {

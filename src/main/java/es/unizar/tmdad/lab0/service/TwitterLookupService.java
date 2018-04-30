@@ -1,7 +1,8 @@
 package es.unizar.tmdad.lab0.service;
 
-import es.unizar.tmdad.lab0.rabbitmq.RabbitMQ;
+import es.unizar.tmdad.lab0.rabbitmq.RabbitMQEndpoint;
 import es.unizar.tmdad.lab0.repo.DBAccess;
+import es.unizar.tmdad.lab0.settings.Preferences;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,13 +30,16 @@ import org.springframework.util.MimeTypeUtils;
 public class TwitterLookupService implements StreamListener {
 
     @Autowired
-    private DBAccess twac;
-
-    @Autowired
     private SimpMessageSendingOperations smso;
 
     @Autowired
-    private RabbitMQ rabbitMQ;
+    private RabbitMQEndpoint rabbitMQ;
+    
+    @Autowired
+    private Preferences pref;
+    
+    @Autowired
+    private DBAccess twac;
 
     @Value("${twitter.consumerKey}")
     private String consumerKey;
@@ -51,7 +55,6 @@ public class TwitterLookupService implements StreamListener {
 
 
     private Stream stream = null;
-    private String query = "";
     private Set<String> users = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
 
     private void updateStream() {
@@ -65,12 +68,12 @@ public class TwitterLookupService implements StreamListener {
     }
 
     public void startStream() {
-        if (!query.isEmpty()) {
+        if (pref.getQuery()!=null && !pref.getQuery().isEmpty()) {
             Twitter twitter = new TwitterTemplate(consumerKey, consumerSecret, accessToken, accessTokenSecret);
             List<StreamListener> list = new ArrayList<>();
             list.add(this);
-            stream = twitter.streamingOperations().filter(query, list);
-            System.out.println("Started stream with query=" + query);
+            stream = twitter.streamingOperations().filter(pref.getQuery(), list);
+            System.out.println("Started stream with query=" + pref.getQuery());
         }
     }
 
@@ -103,16 +106,10 @@ public class TwitterLookupService implements StreamListener {
 
     
     public void changeQuery(String query) {
-        this.query = query;
-        twac.saveQuery(query);
+        pref.setQuery(query);
         System.out.println("New query: " + query);
 
         updateStream();
-    }
-    
-    public void init(){
-        this.query = twac.loadQuery();
-        System.out.println("Loaded query "+query);
     }
     
 
@@ -121,7 +118,7 @@ public class TwitterLookupService implements StreamListener {
     public void onTweet(Tweet tweet) {
         System.out.println("Received tweet");
         // GUARDAR EN BD
-        twac.saveTweet(tweet, query);
+        twac.saveTweet(tweet, pref.getQuery());
         rabbitMQ.sendTweet(tweet);
     }
 
