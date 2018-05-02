@@ -133,20 +133,26 @@ public class DashboardController {
         };
 
         for (String machine : machines) {
+    		new Thread(new Runnable(){
 
-            try {
-                HttpsURLConnection connection = (HttpsURLConnection) new URL(machine).openConnection();
-                connection.setRequestMethod("HEAD");
-                int responseCode = connection.getResponseCode();
-                if (responseCode != 200) {
-                    System.out.println("Oh oh, couldn't akawe machine " + machine + " (" + responseCode + ")");
-                }
+				@Override
+				public void run() {
+					try {
+		                HttpsURLConnection connection = (HttpsURLConnection) new URL(machine).openConnection();
+		                connection.setRequestMethod("HEAD");
+		                int responseCode = connection.getResponseCode();
+		                if (responseCode != 200) {
+		                    System.out.println("Oh oh, couldn't akawe machine " + machine + " (" + responseCode + ")");
+		                }
 
-            } catch (MalformedURLException ex) {
-                ex.printStackTrace();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+		            } catch (MalformedURLException ex) {
+		                ex.printStackTrace();
+		            } catch (IOException ex) {
+		                ex.printStackTrace();
+		            }
+				}
+    			
+    		}).start();;
         }
     }
 

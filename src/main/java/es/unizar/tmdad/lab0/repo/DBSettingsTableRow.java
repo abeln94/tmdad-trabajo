@@ -13,7 +13,7 @@ public class DBSettingsTableRow {
     private String value;
 
     @Id
-    @Column(name = "name")
+    @Column(name = "key")
     public String getKey() {
         return key;
     }
