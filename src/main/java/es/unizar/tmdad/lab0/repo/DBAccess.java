@@ -67,8 +67,8 @@ public class DBAccess {
 
     public String getSettings(String key) {
         for (DBSettingsTableRow settings : repoSettings.findAll()) {
-            if (settings.getName().equals(key)){
-                return settings.getLevel();
+            if (settings.getKey().equals(key)){
+                return settings.getValue();
             }
         }
         return null;
@@ -76,8 +76,8 @@ public class DBAccess {
 
     public void setSettings(String key, String value) {
         DBSettingsTableRow row = new DBSettingsTableRow();
-        row.setName(key);
-        row.setLevel(value);
+        row.setKey(key);
+        row.setValue(value);
         repoSettings.save(row);
     }
 

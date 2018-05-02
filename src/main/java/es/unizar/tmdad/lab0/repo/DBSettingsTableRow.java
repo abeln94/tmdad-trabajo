@@ -9,25 +9,25 @@ import javax.persistence.Table;
 @Table(name = "processorconf", schema = "public")
 public class DBSettingsTableRow {
 
-    private String name;
-    private String level;
+    private String key;
+    private String value;
 
     @Id
     @Column(name = "name")
-    public String getName() {
-        return name;
+    public String getKey() {
+        return key;
     }
 
-    @Column(name = "level")
-    public String getLevel() {
-        return level;
+    @Column(name = "value")
+    public String getValue() {
+        return value;
     }
 
-    public void setName(String pName) {
-        name = pName;
+    public void setKey(String pKey) {
+        key = pKey;
     }
 
-    public void setLevel(String pLevel) {
-        level = pLevel;
+    public void setValue(String pValue) {
+        value = pValue;
     }
 }
