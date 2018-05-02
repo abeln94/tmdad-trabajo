@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "processorconf", schema = "public")
+@Table(name = "configuration", schema = "public")
 public class DBSettingsTableRow {
 
     private String key;
