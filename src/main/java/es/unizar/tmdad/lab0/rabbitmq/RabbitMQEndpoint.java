@@ -55,19 +55,19 @@ public class RabbitMQEndpoint {
 
     //redirections
     @Bean
-    SimpleMessageListenerContainer container(ConnectionFactory connectionFactory, MessageListenerAdapter listenerAdapter) {
+    SimpleMessageListenerContainer container(ConnectionFactory connectionFactory) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.setQueues(queueTweets());
-        container.setMessageListener(listenerAdapter);
+        container.setMessageListener(listenerAdapter());
         return container;
     }
 
     
     //adapters
     @Bean
-    MessageListenerAdapter listenerAdapter(RabbitMQEndpoint receiver) {
-        return new MessageListenerAdapter(receiver, "receiveMessage");
+    MessageListenerAdapter listenerAdapter() {
+        return new MessageListenerAdapter(this, "receiveMessage");
     }
 
     

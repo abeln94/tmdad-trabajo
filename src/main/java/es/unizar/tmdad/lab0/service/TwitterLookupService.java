@@ -37,9 +37,6 @@ public class TwitterLookupService implements StreamListener {
     
     @Autowired
     private Preferences pref;
-    
-    @Autowired
-    private DBAccess twac;
 
     @Value("${twitter.consumerKey}")
     private String consumerKey;
@@ -116,9 +113,7 @@ public class TwitterLookupService implements StreamListener {
     // ---------- Stream Listener -------------//
     @Override
     public void onTweet(Tweet tweet) {
-        System.out.println("Received tweet");
-        // GUARDAR EN BD
-        twac.saveTweet(tweet, pref.getQuery());
+        System.out.println("Received tweet from Twitter");
         rabbitMQ.sendTweet(tweet);
     }
 
