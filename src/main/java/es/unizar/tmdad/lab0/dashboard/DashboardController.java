@@ -104,39 +104,4 @@ public class DashboardController {
         twitter.unSubscribeUser(sha.getSessionId());
     }
 
-    //loader TODO: move to other class
-    @EventListener
-    public void handleContextRefresh(ContextRefreshedEvent event) {
-
-        //deshibernate the other machines
-        String[] machines = new String[]{
-            "https://carlos-abel-tmdad-trabajo-2.herokuapp.com/",
-            "https://carlos-abel-tmdad-trabajo-3.herokuapp.com/",
-            "https://carlos-abel-tmdad-trabajo-4.herokuapp.com/"
-        };
-
-        for (String machine : machines) {
-            new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    try {
-                        HttpsURLConnection connection = (HttpsURLConnection) new URL(machine).openConnection();
-                        connection.setRequestMethod("HEAD");
-                        int responseCode = connection.getResponseCode();
-                        if (responseCode != 200) {
-                            System.out.println("Oh oh, couldn't akawe machine " + machine + " (" + responseCode + ")");
-                        }
-
-                    } catch (MalformedURLException ex) {
-                        ex.printStackTrace();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-
-            }).start();
-        }
-    }
-
 }
