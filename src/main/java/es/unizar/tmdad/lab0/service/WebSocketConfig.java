@@ -13,6 +13,11 @@ import org.springframework.web.socket.config.annotation.AbstractWebSocketMessage
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 
+/**
+ * STOMP Endpoint
+ * Configures and connects to the stomp client
+ * TODO: move here everythig stomp-related, remove everything non-stomp related and rename to STOMPEndpoint
+ */
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
@@ -29,7 +34,6 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
     }
 
     //help from https://drissamri.be/blog/java/enable-https-in-spring-boot/
-    
     @Bean
     public EmbeddedServletContainerFactory servletContainer() {
         TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory() {

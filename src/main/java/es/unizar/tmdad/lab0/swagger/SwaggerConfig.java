@@ -22,8 +22,8 @@ import springfox.documentation.swagger.web.SecurityConfigurationBuilder;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
- * Clase SwaggerConfig from
- * http://www.baeldung.com/swagger-2-documentation-for-spring-rest-api
+ * SwaggerConfig: enables the swagger interface
+ * from http://www.baeldung.com/swagger-2-documentation-for-spring-rest-api
  */
 @Configuration
 @EnableSwagger2

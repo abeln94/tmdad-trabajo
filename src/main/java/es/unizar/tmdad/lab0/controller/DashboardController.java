@@ -15,14 +15,11 @@ import javax.net.ssl.HttpsURLConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.social.UncategorizedApiException;
-import org.springframework.social.twitter.api.SearchResults;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,21 +29,37 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+/**
+ * Dashboard controller:
+ * - Definition of uris
+ * - Client-related functions
+ * TODO: separate html uris from stomp uris
+ */
 @Controller
 public class DashboardController {
 
+    /**
+     * After new query or user subscribed/unsubscribed, send updates
+     */
     @Autowired
     private TwitterLookupService twitter;
 
+    /**
+     * To retrieve info about admins, queries and tweets from database
+     */
     @Autowired
     private DBAccess twac;
 
+    /**
+     * After new processor or level, send updates
+     */
     @Autowired
     private RabbitMQEndpoint rabbitMQ;
 
     @Autowired
     private Preferences pref;
 
+    //------------------- RequestMappings--------------------//
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String main() {
         return "index";
@@ -101,11 +114,12 @@ public class DashboardController {
     public void changeSettings(String body, @Header String query, @Header String processor, @Header String level, Principal principal) throws Exception {
         if (twac.isAdmin(principal.getName())) {
             twitter.changeQuery(query);
-            pref.setConfiguration(processor);
+            pref.setConfiguration(processor);//TODO: remove by inserting it into rabbitMQ
             rabbitMQ.sendSettings(level);
         }
     }
 
+    //------------------- listeners------------------//
     //help from https://stackoverflow.com/questions/39677660/spring-websocket-how-to-get-number-of-sessions
     @EventListener
     private void onSessionConnectedEvent(SessionConnectedEvent event) {
@@ -133,26 +147,26 @@ public class DashboardController {
         };
 
         for (String machine : machines) {
-    		new Thread(new Runnable(){
+            new Thread(new Runnable() {
 
-				@Override
-				public void run() {
-					try {
-		                HttpsURLConnection connection = (HttpsURLConnection) new URL(machine).openConnection();
-		                connection.setRequestMethod("HEAD");
-		                int responseCode = connection.getResponseCode();
-		                if (responseCode != 200) {
-		                    System.out.println("Oh oh, couldn't akawe machine " + machine + " (" + responseCode + ")");
-		                }
+                @Override
+                public void run() {
+                    try {
+                        HttpsURLConnection connection = (HttpsURLConnection) new URL(machine).openConnection();
+                        connection.setRequestMethod("HEAD");
+                        int responseCode = connection.getResponseCode();
+                        if (responseCode != 200) {
+                            System.out.println("Oh oh, couldn't akawe machine " + machine + " (" + responseCode + ")");
+                        }
 
-		            } catch (MalformedURLException ex) {
-		                ex.printStackTrace();
-		            } catch (IOException ex) {
-		                ex.printStackTrace();
-		            }
-				}
-    			
-    		}).start();;
+                    } catch (MalformedURLException ex) {
+                        ex.printStackTrace();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+
+            }).start();
         }
     }
 

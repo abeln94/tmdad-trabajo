@@ -1,7 +1,6 @@
 package es.unizar.tmdad.lab0.service;
 
 import es.unizar.tmdad.lab0.rabbitmq.RabbitMQEndpoint;
-import es.unizar.tmdad.lab0.repo.DBAccess;
 import es.unizar.tmdad.lab0.settings.Preferences;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.social.twitter.api.SearchMetadata;
-import org.springframework.social.twitter.api.SearchResults;
 import org.springframework.social.twitter.api.Stream;
 import org.springframework.social.twitter.api.StreamDeleteEvent;
 import org.springframework.social.twitter.api.StreamListener;
@@ -26,18 +23,30 @@ import org.springframework.social.twitter.api.impl.TwitterTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MimeTypeUtils;
 
+/**
+ * Interact with Twitter
+ * - Configure stream
+ * - Receive raw tweets from twitter
+ */
 @Service
 public class TwitterLookupService implements StreamListener {
 
     @Autowired
     private SimpMessageSendingOperations smso;
 
+    /**
+     * After receiving raw tweet, send to rabbitmq to process
+     */
     @Autowired
     private RabbitMQEndpoint rabbitMQ;
-    
+
+    /**
+     * Get query
+     */
     @Autowired
     private Preferences pref;
 
+    //------------------keys and tokens------------------
     @Value("${twitter.consumerKey}")
     private String consumerKey;
 
@@ -50,9 +59,9 @@ public class TwitterLookupService implements StreamListener {
     @Value("${twitter.accessTokenSecret}")
     private String accessTokenSecret;
 
-
+    //------------------stream------------------
     private Stream stream = null;
-    private Set<String> users = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
+    private final Set<String> users = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
 
     private void updateStream() {
         if (stream != null) {
@@ -65,7 +74,7 @@ public class TwitterLookupService implements StreamListener {
     }
 
     public void startStream() {
-        if (pref.getQuery()!=null && !pref.getQuery().isEmpty()) {
+        if (pref.getQuery() != null && !pref.getQuery().isEmpty()) {
             Twitter twitter = new TwitterTemplate(consumerKey, consumerSecret, accessToken, accessTokenSecret);
             List<StreamListener> list = new ArrayList<>();
             list.add(this);
@@ -76,9 +85,9 @@ public class TwitterLookupService implements StreamListener {
 
     public void stopStream() {
         if (stream != null) {
-            try{
+            try {
                 stream.close();
-            }catch(IndexOutOfBoundsException e){
+            } catch (IndexOutOfBoundsException e) {
                 System.out.println("Ignoring error when closing stream");
             }
             System.out.println("Stream closed");
@@ -101,14 +110,12 @@ public class TwitterLookupService implements StreamListener {
         }
     }
 
-    
     public void changeQuery(String query) {
         pref.setQuery(query);
         System.out.println("New query: " + query);
 
         updateStream();
     }
-    
 
     // ---------- Stream Listener -------------//
     @Override
@@ -117,7 +124,7 @@ public class TwitterLookupService implements StreamListener {
         rabbitMQ.sendTweet(tweet);
     }
 
-    public void onProcessedTweet(Tweet tweet) {
+    public void onProcessedTweet(Tweet tweet) {//TODO: move to StompEndpoint
         Map<String, Object> map = new HashMap<>();
         map.put(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON);
 

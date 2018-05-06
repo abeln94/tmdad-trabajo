@@ -7,10 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.stereotype.Service;
 
+/**
+ * Acces to database
+ * - Retrieves data
+ * - Saves data
+ */
 @Service
 public class DBAccess {
 
-    //tweets repository
+    //------------------tweets repository------------------
     @Autowired
     private DBTweetRepository repoTweets;
 
@@ -45,7 +50,7 @@ public class DBAccess {
         repoTweets.save(tweetToSave);
     }
 
-    //admin repository
+    //------------------admin repository------------------
     @Autowired
     private DBAdminRepository repoAd;
 
@@ -61,13 +66,13 @@ public class DBAccess {
         return false;
     }
 
-    //settings repository
+    //------------------settings repository------------------
     @Autowired
     private DBSettingsRepository repoSettings;
 
     public String getSettings(String key) {
         for (DBSettingsTableRow settings : repoSettings.findAll()) {
-            if (settings.getKey().equals(key)){
+            if (settings.getKey().equals(key)) {
                 return settings.getValue();
             }
         }

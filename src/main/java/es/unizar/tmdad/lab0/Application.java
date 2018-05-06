@@ -6,6 +6,9 @@ import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
+/**
+ * Application class. Spring dark magic.
+ */
 @SpringBootApplication
 @EnableOAuth2Sso
 public class Application extends WebSecurityConfigurerAdapter {
@@ -18,13 +21,13 @@ public class Application extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/", "/login**", "/webjars/**")
                 .permitAll()
-                .antMatchers("/configuration","/functions_admin.js","/app/settings")
+                .antMatchers("/configuration", "/functions_admin.js", "/app/settings")
                 .authenticated()
                 .and().logout().logoutSuccessUrl("/").permitAll();
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);        
+        SpringApplication.run(Application.class, args);
     }
 
 }

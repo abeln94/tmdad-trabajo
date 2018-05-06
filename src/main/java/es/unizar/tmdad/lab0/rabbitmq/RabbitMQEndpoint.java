@@ -15,45 +15,65 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.stereotype.Component;
 
+/**
+ * Endpoint of RabbitMQ
+ * - Configures exchanges, topics and queues.
+ * - Receives messages from subscribed queues
+ * - Sends messages to topics
+ */
 @Component
 public class RabbitMQEndpoint {
-    
-    //exchanges
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    /**
+     * After receiving a processed tweet, send to stomp
+     * TODO- substitute with STOMPEndopint
+     */
+    @Autowired
+    private TwitterLookupService twitterLookupService;
+
+    /**
+     * To get the processor name, to send to its topic
+     */
+    @Autowired
+    private Preferences pref;
+
+    //-------------exchanges-----------------
     static final String tweetsExchangeName = "tweets-exchange";
     static final String settingsExchangeName = "settings-exchange";
-    
+
     @Bean
     TopicExchange tweetsExchange() {
         return new TopicExchange(tweetsExchangeName);
     }
-    
+
     @Bean
     TopicExchange settingsExchange() {
         return new TopicExchange(settingsExchangeName);
     }
-    
-    //queues
+
+    //--------------queues---------------
     static final String inputQueueName = "processedTweets-queue";
-    
+
     @Bean
-    Queue queueTweets(){
+    Queue queueTweets() {
         return new Queue(inputQueueName, false);
     }
-    
-    
-    //topics
+
+    //----------------topics----------------
     static final String inputTopicName = "processedTweets-topic";
     static final String outputTopicNamePrefix = "rawTweets-topic.";
     static final String settingsTopicNamePrefix = "settings-topic.";
-    
-    
-    //bindings
+
+    //--------------bindings-----------------
     @Bean
     Binding binding() {
         return BindingBuilder.bind(queueTweets()).to(tweetsExchange()).with(inputTopicName);
     }
 
-    //redirections
+    //--------------redirections------------------
     @Bean
     SimpleMessageListenerContainer container(ConnectionFactory connectionFactory) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
@@ -63,41 +83,28 @@ public class RabbitMQEndpoint {
         return container;
     }
 
-    
-    //adapters
+    //-----------adapters--------------
     @Bean
     MessageListenerAdapter listenerAdapter() {
         return new MessageListenerAdapter(this, "receiveMessage");
     }
 
-    
-    
-    
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
-    
-    @Autowired
-    private TwitterLookupService twitterLookupService;
-    
-    @Autowired
-    private Preferences pref;
-
-    //listeners
+    //---------------listeners---------------
     public void receiveMessage(Tweet tweet) {
         System.out.println("Received processed tweet");
         twitterLookupService.onProcessedTweet(tweet);
     }
-    
-    //senders
-    public void sendTweet(Tweet tweet){
-        System.out.println("Sent tweet to process to "+pref.getProcessorName());
-        rabbitTemplate.convertAndSend(tweetsExchangeName, outputTopicNamePrefix+pref.getProcessorName(), tweet);
+
+    //---------------senders------------------
+    public void sendTweet(Tweet tweet) {
+        System.out.println("Sent tweet to process to " + pref.getProcessorName());
+        rabbitTemplate.convertAndSend(tweetsExchangeName, outputTopicNamePrefix + pref.getProcessorName(), tweet);
         //TODO: remove logic from here, send to logic class
     }
-    
-    public void sendSettings(String processorLevel){
-        System.out.println("Sending settings to "+pref.getProcessorName());
-        rabbitTemplate.convertAndSend(settingsExchangeName, settingsTopicNamePrefix+pref.getProcessorName(), processorLevel);
+
+    public void sendSettings(String processorLevel) {
+        System.out.println("Sending settings to " + pref.getProcessorName());
+        rabbitTemplate.convertAndSend(settingsExchangeName, settingsTopicNamePrefix + pref.getProcessorName(), processorLevel);
     }
 
 }
