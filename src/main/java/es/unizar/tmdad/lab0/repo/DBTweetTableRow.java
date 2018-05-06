@@ -12,7 +12,7 @@ public class DBTweetTableRow {
     String id;
     String text;
     String fromUser;
-    String query;
+    String query;//Unused
 
     @Id
     @Column(name = "ID")

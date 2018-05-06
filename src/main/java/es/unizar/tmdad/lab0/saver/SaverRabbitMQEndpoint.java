@@ -24,12 +24,6 @@ import org.springframework.stereotype.Component;
 public class SaverRabbitMQEndpoint {
 
     /**
-     * To get the current query
-     */
-    @Autowired
-    private Preferences pref;
-
-    /**
      * To save the tweet into the database
      */
     @Autowired
@@ -80,7 +74,7 @@ public class SaverRabbitMQEndpoint {
     public void receiveMessage(Tweet tweet) {
         System.out.println("Received tweet to save");
         // GUARDAR EN BD
-        twac.saveTweet(tweet, pref.getQuery());
+        twac.saveTweet(tweet);
     }
 
 }

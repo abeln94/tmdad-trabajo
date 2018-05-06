@@ -25,34 +25,22 @@ public class DBAccess {
     private DBSettingsRepository repoSettings;
 
     //------------------tweets repository------------------
-    public Set<String> findQueries() {
-        Iterable<DBTweetTableRow> it = repoTweets.findAll();
-        Set<String> resultSet = new LinkedHashSet<>();
-        for (DBTweetTableRow t : it) {
-            resultSet.add(t.getQuery());
-        }
-        return resultSet;
-    }
-
-    public ArrayList<DBTweetTableRow> findByQuery(String q) {
+    public ArrayList<DBTweetTableRow> getSavedTweets() {
         Iterable<DBTweetTableRow> it = repoTweets.findAll();
         ArrayList<DBTweetTableRow> resultSet = new ArrayList<>();
         for (DBTweetTableRow t : it) {
-            String query = t.getQuery().replace(" ", "");
-            if (query.equals(q)) {
-                resultSet.add(t);
-            }
+            resultSet.add(t);
         }
 
         return resultSet;
     }
 
-    public void saveTweet(Tweet tweet, String query) {
+    public void saveTweet(Tweet tweet) {
         DBTweetTableRow tweetToSave = new DBTweetTableRow();
         tweetToSave.setId(tweet.getIdStr());
         tweetToSave.setText(tweet.getUnmodifiedText());
         tweetToSave.setFromUser(tweet.getFromUser());
-        tweetToSave.setQuery(query);
+        tweetToSave.setQuery("");
         repoTweets.save(tweetToSave);
     }
 

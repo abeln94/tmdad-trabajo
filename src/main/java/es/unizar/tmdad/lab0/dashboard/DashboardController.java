@@ -86,17 +86,10 @@ public class DashboardController {
         return "bdsearch";
     }
 
-    @RequestMapping(value = "/database/queries", method = RequestMethod.GET)
-    @ResponseBody
-    public Set<String> getQueries() {
-        return twac.findQueries();
-
-    }
-
     @RequestMapping(value = "/database/tweets", method = RequestMethod.GET)
     @ResponseBody
-    public ArrayList<DBTweetTableRow> getTweets(String q) {
-        return twac.findByQuery(q);
+    public ArrayList<DBTweetTableRow> getTweets() {
+        return twac.getSavedTweets();
 
     }
 
