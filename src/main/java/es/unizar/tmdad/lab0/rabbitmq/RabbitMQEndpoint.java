@@ -1,5 +1,6 @@
 package es.unizar.tmdad.lab0.rabbitmq;
 
+import es.unizar.tmdad.lab0.service.STOMPEndpoint;
 import es.unizar.tmdad.lab0.service.TwitterLookupService;
 import es.unizar.tmdad.lab0.settings.Preferences;
 import org.springframework.amqp.core.Binding;
@@ -29,10 +30,9 @@ public class RabbitMQEndpoint {
 
     /**
      * After receiving a processed tweet, send to stomp
-     * TODO- substitute with STOMPEndopint
      */
     @Autowired
-    private TwitterLookupService twitterLookupService;
+    private STOMPEndpoint stomp;
 
     /**
      * To get the processor name, to send to its topic
@@ -92,17 +92,21 @@ public class RabbitMQEndpoint {
     //---------------listeners---------------
     public void receiveMessage(Tweet tweet) {
         System.out.println("Received processed tweet");
-        twitterLookupService.onProcessedTweet(tweet);
+        stomp.onProcessedTweet(tweet);
+    }
+
+    //----------------setters-----------
+    public void setProcessorName(String processorName) {
+        pref.setProcessorName(processorName);
     }
 
     //---------------senders------------------
     public void sendTweet(Tweet tweet) {
         System.out.println("Sent tweet to process to " + pref.getProcessorName());
         rabbitTemplate.convertAndSend(tweetsExchangeName, outputTopicNamePrefix + pref.getProcessorName(), tweet);
-        //TODO: remove logic from here, send to logic class
     }
 
-    public void sendSettings(String processorLevel) {
+    public void sendProcessorLevel(String processorLevel) {
         System.out.println("Sending settings to " + pref.getProcessorName());
         rabbitTemplate.convertAndSend(settingsExchangeName, settingsTopicNamePrefix + pref.getProcessorName(), processorLevel);
     }

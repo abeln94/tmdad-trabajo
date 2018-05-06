@@ -26,7 +26,7 @@ public class Preferences {
         return processorName;
     }
 
-    public void setConfiguration(String processorName) {//TODO: rename to setProcessorName
+    public void setProcessorName(String processorName) {
         this.processorName = processorName;
         twac.setSettings(key_processorName, processorName);
     }

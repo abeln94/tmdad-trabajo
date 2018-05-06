@@ -15,10 +15,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class DBAccess {
 
-    //------------------tweets repository------------------
     @Autowired
     private DBTweetRepository repoTweets;
 
+    @Autowired
+    private DBAdminRepository repoAd;
+
+    @Autowired
+    private DBSettingsRepository repoSettings;
+
+    //------------------tweets repository------------------
     public Set<String> findQueries() {
         Iterable<DBTweetTableRow> it = repoTweets.findAll();
         Set<String> resultSet = new LinkedHashSet<>();
@@ -51,9 +57,6 @@ public class DBAccess {
     }
 
     //------------------admin repository------------------
-    @Autowired
-    private DBAdminRepository repoAd;
-
     public boolean isAdmin(String user) {
         for (DBAdminTableRow a : repoAd.findAll()) {
             if (user.equals(a.getId())) {
@@ -67,9 +70,6 @@ public class DBAccess {
     }
 
     //------------------settings repository------------------
-    @Autowired
-    private DBSettingsRepository repoSettings;
-
     public String getSettings(String key) {
         for (DBSettingsTableRow settings : repoSettings.findAll()) {
             if (settings.getKey().equals(key)) {

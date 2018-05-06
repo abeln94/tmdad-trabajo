@@ -33,7 +33,6 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
  * Dashboard controller:
  * - Definition of uris
  * - Client-related functions
- * TODO: separate html uris from stomp uris
  */
 @Controller
 public class DashboardController {
@@ -45,19 +44,10 @@ public class DashboardController {
     private TwitterLookupService twitter;
 
     /**
-     * To retrieve info about admins, queries and tweets from database
+     * To retrieve info about queries and tweets from database
      */
     @Autowired
     private DBAccess twac;
-
-    /**
-     * After new processor or level, send updates
-     */
-    @Autowired
-    private RabbitMQEndpoint rabbitMQ;
-
-    @Autowired
-    private Preferences pref;
 
     //------------------- RequestMappings--------------------//
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -108,15 +98,6 @@ public class DashboardController {
     public ArrayList<DBTweetTableRow> getTweets(String q) {
         return twac.findByQuery(q);
 
-    }
-
-    @MessageMapping(/*app*/"/settings")
-    public void changeSettings(String body, @Header String query, @Header String processor, @Header String level, Principal principal) throws Exception {
-        if (twac.isAdmin(principal.getName())) {
-            twitter.changeQuery(query);
-            pref.setConfiguration(processor);//TODO: remove by inserting it into rabbitMQ
-            rabbitMQ.sendSettings(level);
-        }
     }
 
     //------------------- listeners------------------//

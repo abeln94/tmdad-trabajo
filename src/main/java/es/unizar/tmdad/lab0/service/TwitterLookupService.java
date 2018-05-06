@@ -31,9 +31,6 @@ import org.springframework.util.MimeTypeUtils;
 @Service
 public class TwitterLookupService implements StreamListener {
 
-    @Autowired
-    private SimpMessageSendingOperations smso;
-
     /**
      * After receiving raw tweet, send to rabbitmq to process
      */
@@ -122,13 +119,6 @@ public class TwitterLookupService implements StreamListener {
     public void onTweet(Tweet tweet) {
         System.out.println("Received tweet from Twitter");
         rabbitMQ.sendTweet(tweet);
-    }
-
-    public void onProcessedTweet(Tweet tweet) {//TODO: move to StompEndpoint
-        Map<String, Object> map = new HashMap<>();
-        map.put(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON);
-
-        smso.convertAndSend("/topic/search", tweet, map);
     }
 
     @Override
