@@ -1,23 +1,18 @@
 package es.unizar.tmdad.lab0.dashboard;
 
-import es.unizar.tmdad.lab0.endpoints.RabbitMQEndpoint;
+import es.unizar.tmdad.lab0.endpoints.TwitterEndpoint;
 import es.unizar.tmdad.lab0.repo.DBAccess;
 import es.unizar.tmdad.lab0.repo.DBTweetTableRow;
-import es.unizar.tmdad.lab0.endpoints.TwitterEndpoint;
-import es.unizar.tmdad.lab0.settings.Preferences;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Set;
 import javax.net.ssl.HttpsURLConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
-import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.social.UncategorizedApiException;
 import org.springframework.stereotype.Controller;
@@ -47,7 +42,7 @@ public class DashboardController {
      * To retrieve info about queries and tweets from database
      */
     @Autowired
-    private DBAccess twac;
+    private DBAccess database;
 
     //------------------- RequestMappings--------------------//
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -74,7 +69,7 @@ public class DashboardController {
 
     @RequestMapping(value = "/configuration", method = RequestMethod.GET)
     public String main_configuration(Principal principal) {
-        if (twac.isAdmin(principal.getName())) {
+        if (database.isAdmin(principal.getName())) {
             return "admin";
         } else {
             return "no-access";
@@ -89,7 +84,7 @@ public class DashboardController {
     @RequestMapping(value = "/database/tweets", method = RequestMethod.GET)
     @ResponseBody
     public ArrayList<DBTweetTableRow> getTweets() {
-        return twac.getSavedTweets();
+        return database.getSavedTweets();
 
     }
 
@@ -109,7 +104,7 @@ public class DashboardController {
         twitter.unSubscribeUser(sha.getSessionId());
     }
 
-    //loader
+    //loader TODO: move to other class
     @EventListener
     public void handleContextRefresh(ContextRefreshedEvent event) {
 

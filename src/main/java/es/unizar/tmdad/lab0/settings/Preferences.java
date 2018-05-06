@@ -17,8 +17,9 @@ public class Preferences {
      * To keep the preferences saved on the database (and to retrieve them on startup)
      */
     @Autowired
-    DBAccess twac;
+    DBAccess database;
 
+    //---------------------processorName-----------------
     static final String key_processorName = "KEY_PROCESSOR_NAME";
     private String processorName;
 
@@ -28,9 +29,10 @@ public class Preferences {
 
     public void setProcessorName(String processorName) {
         this.processorName = processorName;
-        twac.setSettings(key_processorName, processorName);
+        database.setSetting(key_processorName, processorName);
     }
 
+    //---------------------query------------------
     static final String key_query = "KEY_QUERY";
     private String query;
 
@@ -40,14 +42,14 @@ public class Preferences {
 
     public void setQuery(String query) {
         this.query = query;
-        twac.setSettings(key_query, query);
+        database.setSetting(key_query, query);
     }
 
-    //loader
+    //------------startup loader---------------
     @EventListener
     public void handleContextRefresh(ContextRefreshedEvent event) {
-        processorName = twac.getSettings(key_processorName);
-        query = twac.getSettings(key_query);
+        processorName = database.getSetting(key_processorName);
+        query = database.getSetting(key_query);
 
         System.out.println("Loaded preferences PROCESSOR=" + processorName + " QUERY=" + query);
     }

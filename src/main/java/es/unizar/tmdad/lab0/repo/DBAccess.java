@@ -1,8 +1,6 @@
 package es.unizar.tmdad.lab0.repo;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.stereotype.Service;
@@ -19,7 +17,7 @@ public class DBAccess {
     private DBTweetRepository repoTweets;
 
     @Autowired
-    private DBAdminRepository repoAd;
+    private DBAdminRepository repoAdmin;
 
     @Autowired
     private DBSettingsRepository repoSettings;
@@ -46,7 +44,7 @@ public class DBAccess {
 
     //------------------admin repository------------------
     public boolean isAdmin(String user) {
-        for (DBAdminTableRow a : repoAd.findAll()) {
+        for (DBAdminTableRow a : repoAdmin.findAll()) {
             if (user.equals(a.getId())) {
                 return true;
             }
@@ -58,7 +56,7 @@ public class DBAccess {
     }
 
     //------------------settings repository------------------
-    public String getSettings(String key) {
+    public String getSetting(String key) {
         for (DBSettingsTableRow settings : repoSettings.findAll()) {
             if (settings.getKey().equals(key)) {
                 return settings.getValue();
@@ -67,7 +65,7 @@ public class DBAccess {
         return null;
     }
 
-    public void setSettings(String key, String value) {
+    public void setSetting(String key, String value) {
         DBSettingsTableRow row = new DBSettingsTableRow();
         row.setKey(key);
         row.setValue(value);

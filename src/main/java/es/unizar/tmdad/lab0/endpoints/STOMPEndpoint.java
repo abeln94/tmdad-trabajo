@@ -1,9 +1,6 @@
 package es.unizar.tmdad.lab0.endpoints;
 
-import es.unizar.tmdad.lab0.endpoints.RabbitMQEndpoint;
-import es.unizar.tmdad.lab0.endpoints.RabbitMQEndpoint;
 import es.unizar.tmdad.lab0.repo.DBAccess;
-import es.unizar.tmdad.lab0.endpoints.TwitterEndpoint;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +37,7 @@ public class STOMPEndpoint extends AbstractWebSocketMessageBrokerConfigurer {
      * To retrieve info about admins
      */
     @Autowired
-    private DBAccess twac;
+    private DBAccess database;
 
     /**
      * After new processor or level, send updates
@@ -65,7 +62,7 @@ public class STOMPEndpoint extends AbstractWebSocketMessageBrokerConfigurer {
 
     @MessageMapping(/*app*/"/settings")
     public void changeSettings(String body, @Header String query, @Header String processor, @Header String level, Principal principal) throws Exception {
-        if (twac.isAdmin(principal.getName())) {
+        if (database.isAdmin(principal.getName())) {
             twitter.changeQuery(query);
             rabbitMQ.setProcessorName(processor);
             rabbitMQ.sendProcessorLevel(level);

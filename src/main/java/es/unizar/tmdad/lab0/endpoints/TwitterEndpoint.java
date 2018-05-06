@@ -1,18 +1,13 @@
 package es.unizar.tmdad.lab0.endpoints;
 
-import es.unizar.tmdad.lab0.endpoints.RabbitMQEndpoint;
 import es.unizar.tmdad.lab0.settings.Preferences;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.messaging.MessageHeaders;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.social.twitter.api.Stream;
 import org.springframework.social.twitter.api.StreamDeleteEvent;
 import org.springframework.social.twitter.api.StreamListener;
@@ -21,7 +16,6 @@ import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.Twitter;
 import org.springframework.social.twitter.api.impl.TwitterTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MimeTypeUtils;
 
 /**
  * Interact with Twitter
@@ -41,7 +35,7 @@ public class TwitterEndpoint implements StreamListener {
      * Get query
      */
     @Autowired
-    private Preferences pref;
+    private Preferences prefs;
 
     //------------------keys and tokens------------------
     @Value("${twitter.consumerKey}")
@@ -71,12 +65,12 @@ public class TwitterEndpoint implements StreamListener {
     }
 
     public void startStream() {
-        if (pref.getQuery() != null && !pref.getQuery().isEmpty()) {
+        if (prefs.getQuery() != null && !prefs.getQuery().isEmpty()) {
             Twitter twitter = new TwitterTemplate(consumerKey, consumerSecret, accessToken, accessTokenSecret);
             List<StreamListener> list = new ArrayList<>();
             list.add(this);
-            stream = twitter.streamingOperations().filter(pref.getQuery(), list);
-            System.out.println("Started stream with query=" + pref.getQuery());
+            stream = twitter.streamingOperations().filter(prefs.getQuery(), list);
+            System.out.println("Started stream with query=" + prefs.getQuery());
         }
     }
 
@@ -108,7 +102,7 @@ public class TwitterEndpoint implements StreamListener {
     }
 
     public void changeQuery(String query) {
-        pref.setQuery(query);
+        prefs.setQuery(query);
         System.out.println("New query: " + query);
 
         updateStream();
@@ -123,6 +117,7 @@ public class TwitterEndpoint implements StreamListener {
 
     @Override
     public void onDelete(StreamDeleteEvent deleteEvent) {
+        System.out.println("StreamListener#onDelete");
     }
 
     @Override

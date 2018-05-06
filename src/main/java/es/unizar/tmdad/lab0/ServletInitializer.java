@@ -22,6 +22,7 @@ public class ServletInitializer extends SpringBootServletInitializer {
         return application.sources(Application.class);
     }
 
+    // To redirect http:8080 -> https:8443
     //help from https://drissamri.be/blog/java/enable-https-in-spring-boot/
     @Bean
     public EmbeddedServletContainerFactory servletContainer() {

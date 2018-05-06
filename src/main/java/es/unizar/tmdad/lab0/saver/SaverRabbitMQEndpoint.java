@@ -1,7 +1,6 @@
 package es.unizar.tmdad.lab0.saver;
 
 import es.unizar.tmdad.lab0.repo.DBAccess;
-import es.unizar.tmdad.lab0.settings.Preferences;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
@@ -27,7 +26,7 @@ public class SaverRabbitMQEndpoint {
      * To save the tweet into the database
      */
     @Autowired
-    private DBAccess twac;
+    private DBAccess database;
 
     //--------------------exchanges--------------------
     static final String tweetsExchangeName = "tweets-exchange";
@@ -74,7 +73,7 @@ public class SaverRabbitMQEndpoint {
     public void receiveMessage(Tweet tweet) {
         System.out.println("Received tweet to save");
         // GUARDAR EN BD
-        twac.saveTweet(tweet);
+        database.saveTweet(tweet);
     }
 
 }

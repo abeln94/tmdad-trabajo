@@ -36,7 +36,7 @@ public class RabbitMQEndpoint {
      * To get the processor name, to send to its topic
      */
     @Autowired
-    private Preferences pref;
+    private Preferences prefs;
 
     //-------------exchanges-----------------
     static final String tweetsExchangeName = "tweets-exchange";
@@ -56,7 +56,7 @@ public class RabbitMQEndpoint {
     static final String inputQueueName = "processedTweets-queue";
 
     @Bean
-    Queue queueTweets() {
+    Queue tweetsQueue() {
         return new Queue(inputQueueName, false);
     }
 
@@ -67,23 +67,23 @@ public class RabbitMQEndpoint {
 
     //--------------bindings-----------------
     @Bean
-    Binding binding() {
-        return BindingBuilder.bind(queueTweets()).to(tweetsExchange()).with(inputTopicName);
+    Binding tweetsBinding() {
+        return BindingBuilder.bind(tweetsQueue()).to(tweetsExchange()).with(inputTopicName);
     }
 
     //--------------redirections------------------
     @Bean
-    SimpleMessageListenerContainer container(ConnectionFactory connectionFactory) {
+    SimpleMessageListenerContainer tweetsContainer(ConnectionFactory connectionFactory) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.setQueues(queueTweets());
-        container.setMessageListener(listenerAdapter());
+        container.setQueues(tweetsQueue());
+        container.setMessageListener(tweetsListener());
         return container;
     }
 
     //-----------adapters--------------
     @Bean
-    MessageListenerAdapter listenerAdapter() {
+    MessageListenerAdapter tweetsListener() {
         return new MessageListenerAdapter(this, "receiveMessage");
     }
 
@@ -95,18 +95,18 @@ public class RabbitMQEndpoint {
 
     //----------------setters-----------
     public void setProcessorName(String processorName) {
-        pref.setProcessorName(processorName);
+        prefs.setProcessorName(processorName);
     }
 
     //---------------senders------------------
     public void sendTweet(Tweet tweet) {
-        System.out.println("Sent tweet to process to " + pref.getProcessorName());
-        rabbitTemplate.convertAndSend(tweetsExchangeName, outputTopicNamePrefix + pref.getProcessorName(), tweet);
+        System.out.println("Sent tweet to process to " + prefs.getProcessorName());
+        rabbitTemplate.convertAndSend(tweetsExchangeName, outputTopicNamePrefix + prefs.getProcessorName(), tweet);
     }
 
     public void sendProcessorLevel(String processorLevel) {
-        System.out.println("Sending settings to " + pref.getProcessorName());
-        rabbitTemplate.convertAndSend(settingsExchangeName, settingsTopicNamePrefix + pref.getProcessorName(), processorLevel);
+        System.out.println("Sending settings to " + prefs.getProcessorName());
+        rabbitTemplate.convertAndSend(settingsExchangeName, settingsTopicNamePrefix + prefs.getProcessorName(), processorLevel);
     }
 
 }
