@@ -1,9 +1,9 @@
-package es.unizar.tmdad.lab0.controller;
+package es.unizar.tmdad.lab0.dashboard;
 
-import es.unizar.tmdad.lab0.rabbitmq.RabbitMQEndpoint;
+import es.unizar.tmdad.lab0.endpoints.RabbitMQEndpoint;
 import es.unizar.tmdad.lab0.repo.DBAccess;
 import es.unizar.tmdad.lab0.repo.DBTweetTableRow;
-import es.unizar.tmdad.lab0.service.TwitterLookupService;
+import es.unizar.tmdad.lab0.endpoints.TwitterEndpoint;
 import es.unizar.tmdad.lab0.settings.Preferences;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -41,7 +41,7 @@ public class DashboardController {
      * After new query or user subscribed/unsubscribed, send updates
      */
     @Autowired
-    private TwitterLookupService twitter;
+    private TwitterEndpoint twitter;
 
     /**
      * To retrieve info about queries and tweets from database

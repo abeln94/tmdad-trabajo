@@ -1,6 +1,6 @@
-package es.unizar.tmdad.lab0.service;
+package es.unizar.tmdad.lab0.endpoints;
 
-import es.unizar.tmdad.lab0.rabbitmq.RabbitMQEndpoint;
+import es.unizar.tmdad.lab0.endpoints.RabbitMQEndpoint;
 import es.unizar.tmdad.lab0.settings.Preferences;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,7 +29,7 @@ import org.springframework.util.MimeTypeUtils;
  * - Receive raw tweets from twitter
  */
 @Service
-public class TwitterLookupService implements StreamListener {
+public class TwitterEndpoint implements StreamListener {
 
     /**
      * After receiving raw tweet, send to rabbitmq to process

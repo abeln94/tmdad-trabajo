@@ -1,9 +1,9 @@
-package es.unizar.tmdad.lab0.service;
+package es.unizar.tmdad.lab0.endpoints;
 
-import es.unizar.tmdad.lab0.rabbitmq.RabbitMQEndpoint;
-import es.unizar.tmdad.lab0.rabbitmq.RabbitMQEndpoint;
+import es.unizar.tmdad.lab0.endpoints.RabbitMQEndpoint;
+import es.unizar.tmdad.lab0.endpoints.RabbitMQEndpoint;
 import es.unizar.tmdad.lab0.repo.DBAccess;
-import es.unizar.tmdad.lab0.service.TwitterLookupService;
+import es.unizar.tmdad.lab0.endpoints.TwitterEndpoint;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +34,7 @@ public class STOMPEndpoint extends AbstractWebSocketMessageBrokerConfigurer {
      * After new query, notify
      */
     @Autowired
-    private TwitterLookupService twitter;
+    private TwitterEndpoint twitter;
 
     /**
      * To retrieve info about admins

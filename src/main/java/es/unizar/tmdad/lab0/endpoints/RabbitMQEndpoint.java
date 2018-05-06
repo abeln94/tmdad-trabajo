@@ -1,7 +1,5 @@
-package es.unizar.tmdad.lab0.rabbitmq;
+package es.unizar.tmdad.lab0.endpoints;
 
-import es.unizar.tmdad.lab0.service.STOMPEndpoint;
-import es.unizar.tmdad.lab0.service.TwitterLookupService;
 import es.unizar.tmdad.lab0.settings.Preferences;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
