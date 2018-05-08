@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 /**
  * Keeps the preferences of the application
  * - Getters to retrieve
+ * - Setters to save
  */
 @Service
 public class Preferences {

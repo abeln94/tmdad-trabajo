@@ -13,12 +13,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class DBAccess {
 
+    /**
+     * Tweets repository
+     */
     @Autowired
     private DBTweetRepository repoTweets;
 
+    /**
+     * Admin repository
+     */
     @Autowired
     private DBAdminRepository repoAdmin;
 
+    /**
+     * Settings repository
+     */
     @Autowired
     private DBSettingsRepository repoSettings;
 

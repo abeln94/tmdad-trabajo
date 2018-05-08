@@ -1,8 +1,6 @@
 package es.unizar.tmdad.lab0;
 
 import java.io.IOException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 import org.apache.catalina.Context;
