@@ -1,4 +1,4 @@
-package es.unizar.tmdad.lab0;
+package es.carlosabel.tmdad.trabajo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

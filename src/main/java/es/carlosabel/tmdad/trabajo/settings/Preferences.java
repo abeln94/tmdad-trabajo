@@ -1,6 +1,6 @@
-package es.unizar.tmdad.lab0.settings;
+package es.carlosabel.tmdad.trabajo.settings;
 
-import es.unizar.tmdad.lab0.repo.DBAccess;
+import es.carlosabel.tmdad.trabajo.repo.DBAccess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;

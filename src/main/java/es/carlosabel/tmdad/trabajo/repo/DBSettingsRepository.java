@@ -1,4 +1,4 @@
-package es.unizar.tmdad.lab0.repo;
+package es.carlosabel.tmdad.trabajo.repo;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

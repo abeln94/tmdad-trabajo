@@ -1,4 +1,4 @@
-package es.unizar.tmdad.lab0.swagger;
+package es.carlosabel.tmdad.trabajo.swagger;
 
 import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Value;

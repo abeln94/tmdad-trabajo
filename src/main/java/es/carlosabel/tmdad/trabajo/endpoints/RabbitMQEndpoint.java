@@ -1,6 +1,6 @@
-package es.unizar.tmdad.lab0.endpoints;
+package es.carlosabel.tmdad.trabajo.endpoints;
 
-import es.unizar.tmdad.lab0.settings.Preferences;
+import es.carlosabel.tmdad.trabajo.settings.Preferences;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;

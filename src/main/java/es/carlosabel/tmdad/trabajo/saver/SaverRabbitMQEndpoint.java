@@ -1,6 +1,6 @@
-package es.unizar.tmdad.lab0.saver;
+package es.carlosabel.tmdad.trabajo.saver;
 
-import es.unizar.tmdad.lab0.repo.DBAccess;
+import es.carlosabel.tmdad.trabajo.repo.DBAccess;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;

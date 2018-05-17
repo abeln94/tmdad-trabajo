@@ -1,4 +1,4 @@
-package es.unizar.tmdad.lab0.repo;
+package es.carlosabel.tmdad.trabajo.repo;
 
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;

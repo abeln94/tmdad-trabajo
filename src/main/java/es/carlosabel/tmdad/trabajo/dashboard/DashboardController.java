@@ -1,8 +1,8 @@
-package es.unizar.tmdad.lab0.dashboard;
+package es.carlosabel.tmdad.trabajo.dashboard;
 
-import es.unizar.tmdad.lab0.endpoints.TwitterEndpoint;
-import es.unizar.tmdad.lab0.repo.DBAccess;
-import es.unizar.tmdad.lab0.repo.DBTweetTableRow;
+import es.carlosabel.tmdad.trabajo.endpoints.TwitterEndpoint;
+import es.carlosabel.tmdad.trabajo.repo.DBAccess;
+import es.carlosabel.tmdad.trabajo.repo.DBTweetTableRow;
 import java.security.Principal;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;

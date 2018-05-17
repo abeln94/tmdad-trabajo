@@ -1,6 +1,6 @@
-package es.unizar.tmdad.lab0.endpoints;
+package es.carlosabel.tmdad.trabajo.endpoints;
 
-import es.unizar.tmdad.lab0.repo.DBAccess;
+import es.carlosabel.tmdad.trabajo.repo.DBAccess;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;

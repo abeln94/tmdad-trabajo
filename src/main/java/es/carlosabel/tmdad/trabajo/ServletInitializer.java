@@ -1,4 +1,4 @@
-package es.unizar.tmdad.lab0;
+package es.carlosabel.tmdad.trabajo;
 
 import java.io.IOException;
 import java.net.URL;
