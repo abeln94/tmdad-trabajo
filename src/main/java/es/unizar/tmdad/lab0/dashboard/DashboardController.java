@@ -71,11 +71,6 @@ public class DashboardController {
         }
     }
 
-    @RequestMapping(value = "/database", method = RequestMethod.GET)
-    public String main_database() {
-        return "bdsearch";
-    }
-
     @RequestMapping(value = "/database/tweets", method = RequestMethod.GET)
     @ResponseBody
     public ArrayList<DBTweetTableRow> getTweets() {

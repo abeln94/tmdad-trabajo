@@ -45,30 +45,31 @@
 
     </head>
     <body>
-    <div>
-        <nav class="navbar navbar-dark bg-dark navbar-expand-sm sticky-top" id="navBar">
-            <a class="navbar-brand" href="#">Trabajo Carlos-Abel</a>
-            <button class="btn btn-secondary" onclick="window.open('/configuration', '_blank');">Configuration</button>
-            <button class="btn btn-secondary" onclick="window.open('/database', '_blank');">Database</button>
-        </nav>
-        <div class="container-fluid">
-            <!--
-            <form id="search" action="search" method="get">
-                <div class="row">
-                    <input type="text" class="form-control" id="q" name="q"
-                           placeholder="Escribe algo que quieras buscar"/>
-                </div>
-                <div class="row">&nbsp;</div>
-                <div class="row">
-                    <button type="submit" class="btn btn-default center-block">Buscar</button>
-                </div>
-            </form>
-            -->
-            <div id="loader"></div>
-            <div class="card-columns mt-3" id="resultsBlock"></div>
+        <div>
+            <nav class="navbar navbar-dark bg-dark navbar-expand-sm sticky-top" id="navBar">
+                <button class="btn btn-secondary" onclick="window.open('/configuration', '_blank');">Configuration</button>
+                <a class="navbar-brand" href="#">Trabajo Carlos-Abel</a>
+                <button class="btn btn-secondary" type="submit" id="connect">Connect</button>
+                <button class="btn btn-secondary" type="submit" id="search">Get saved</button>
+            </nav>
+            <div class="container-fluid">
+                <!--
+                <form id="search" action="search" method="get">
+                    <div class="row">
+                        <input type="text" class="form-control" id="q" name="q"
+                               placeholder="Escribe algo que quieras buscar"/>
+                    </div>
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <button type="submit" class="btn btn-default center-block">Buscar</button>
+                    </div>
+                </form>
+                -->
+                <div id="loader"></div>
+                <div class="card-columns mt-3" id="resultsBlock"></div>
+            </div>
         </div>
-        </div>
-        
+
         <script src="http://code.jquery.com/jquery-3.0.0.min.js"
         th:src="@{/webjars/jquery/3.0.0/jquery.min.js}"></script>
         <script
