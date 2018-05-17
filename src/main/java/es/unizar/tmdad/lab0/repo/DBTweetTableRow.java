@@ -30,14 +30,6 @@ public class DBTweetTableRow {
         return fromUser;
     }
 
-    @Column(name = "QUERY")
-    public String getQuery() {
-        return query;
-    }
-
-    public void setQuery(String pQuery) {
-        query = pQuery;
-    }
 
     public void setId(String pId) {
         id = pId;

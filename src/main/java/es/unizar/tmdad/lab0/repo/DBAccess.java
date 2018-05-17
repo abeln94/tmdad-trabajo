@@ -47,7 +47,6 @@ public class DBAccess {
         tweetToSave.setId(tweet.getIdStr());
         tweetToSave.setText(tweet.getUnmodifiedText());
         tweetToSave.setFromUser(tweet.getFromUser());
-        tweetToSave.setQuery("");
         repoTweets.save(tweetToSave);
     }
 
