@@ -6,6 +6,8 @@ import es.carlosabel.tmdad.trabajo.repo.DBTweetTableRow;
 import java.security.Principal;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -25,6 +27,7 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
  * - Client-related functions
  */
 @Controller
+@RefreshScope
 public class DashboardController {
 
     /**
@@ -78,17 +81,26 @@ public class DashboardController {
 
     }
 
+    @Value("${test}")
+    String test;
+
+    @RequestMapping(value = "/test")
+    @ResponseBody
+    public String test() {
+        return test;
+    }
+
     //------------------- listeners------------------//
     //help from https://stackoverflow.com/questions/39677660/spring-websocket-how-to-get-number-of-sessions
     @EventListener
-    private void onSessionConnectedEvent(SessionConnectedEvent event) {
+    public void onSessionConnectedEvent(SessionConnectedEvent event) {
         System.out.println("user subscribed");
         StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
         twitter.subscribeUser(sha.getSessionId());
     }
 
     @EventListener
-    private void onSessionDisconnectEvent(SessionDisconnectEvent event) {
+    public void onSessionDisconnectEvent(SessionDisconnectEvent event) {
         System.out.println("user unsubscribed");
         StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
         twitter.unSubscribeUser(sha.getSessionId());

@@ -10,6 +10,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.stereotype.Component;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Component;
  * - Sends messages to topics
  */
 @Component
+@RefreshScope
 public class RabbitMQEndpoint {
 
     @Autowired

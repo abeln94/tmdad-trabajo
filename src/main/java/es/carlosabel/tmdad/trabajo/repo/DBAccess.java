@@ -2,6 +2,7 @@ package es.carlosabel.tmdad.trabajo.repo;
 
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
  * - Saves data
  */
 @Service
+@RefreshScope
 public class DBAccess {
 
     /**

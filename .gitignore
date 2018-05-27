@@ -37,3 +37,4 @@ application-local.properties
 NOTAS.md
 /src/main/resources/ssl-server.jks
 /bin/
+/src/main/resources/bootstrap.properties

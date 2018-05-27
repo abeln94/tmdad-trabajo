@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.social.twitter.api.Stream;
 import org.springframework.social.twitter.api.StreamDeleteEvent;
 import org.springframework.social.twitter.api.StreamListener;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
  * - Receive raw tweets from twitter
  */
 @Service
+@RefreshScope
 public class TwitterEndpoint implements StreamListener {
 
     /**
